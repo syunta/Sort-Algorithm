@@ -35,7 +35,7 @@ function UIAssembler(){
 	
 	var assembleDOM = function(){
 		$("main").
-			append(dom.$bubbleSortButton);
+			append(dom.$bubbleSort.button);
 	}
 }
 
@@ -76,13 +76,16 @@ function LayoutStyle(){
 }
 
 function DOM(){
-	var css = new DOMStyle();
-	
-	this.$bubbleSortButton
-		= css.defineButton( $("<button>").text("BubbleSort").attr("id","bubbleSort") );
+	this.$bubbleSort = new Button("BubbleSort");
 }
 
-function DOMStyle(){
+function Button(buttonName){
+	var css = new ButtonStyle();
+	
+	this.button = css.defineButton( $("<button>").text(buttonName).attr("id",buttonName) );
+}
+
+function ButtonStyle(){
 	this.defineButton = function($button){
 		$button.css({
 			"width" :"100px",
@@ -93,7 +96,7 @@ function DOMStyle(){
 }
 
 $(function(){
-	$("body").on("click","#bubbleSort",function(){
+	$("body").on("click","#BubbleSort",function(){
 		alert("OK");
 	});
 });
