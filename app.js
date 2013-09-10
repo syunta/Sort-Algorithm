@@ -18,8 +18,13 @@ function UI(){
 	}
 }
 
+funtion UIAssembler(){
+	// TODO
+}
+
 function Layout(){
 	var css = new LayoutStyle();
+	
 	
 	// TODO
 }
