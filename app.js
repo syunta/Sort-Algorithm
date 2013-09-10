@@ -10,23 +10,27 @@ function AppBase(){
 	}
 }
 function UI(){
-	var dom = new DOM();
-	var layout = new Layout();
+	var assembler = new UIAssembler();
 	
 	this.draw = function(){
-		$("body").append( dom.$bubbleSortButton );
+		$("body").append( assembler.assembledPage );
 	}
 }
 
-funtion UIAssembler(){
+function UIAssembler(){
+	var dom = new DOM();
+	var layout = new Layout();
+	
+	this.assembledPage = dom.$bubbleSortButton;
 	// TODO
 }
 
 function Layout(){
 	var css = new LayoutStyle();
 	
+	var $main = $("<main>");
 	
-	// TODO
+	this.panorama = $main;
 }
 
 function LayoutStyle(){
