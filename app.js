@@ -18,19 +18,18 @@ function UI(){
 }
 
 function DOM(){
-	var css = new CSS();
+	var css = new DOMStyle();
 	
-	this.$bubbleSortButton 
+	this.$bubbleSortButton
 		= css.defineButton( $("<button>").text("BubbleSort") );
 }
 
-function CSS(){
+function DOMStyle(){
 	this.defineButton = function($button){
 		$button.css({
 			"width" :"100px",
 			"height":"25px"
 		});
-		
 		return $button;
 	}
 }
