@@ -1,10 +1,10 @@
 function StartApp(){
 	var app = new AppBase();
-	app.test();
+	app.start();
 }
 
 function AppBase(){
-	this.test = function(){
+	this.start = function(){
 		var ui = new UI();
 		ui.draw();
 	}
@@ -79,7 +79,7 @@ function DOM(){
 	var css = new DOMStyle();
 	
 	this.$bubbleSortButton
-		= css.defineButton( $("<button>").text("BubbleSort") );
+		= css.defineButton( $("<button>").text("BubbleSort").attr("id","bubbleSort") );
 }
 
 function DOMStyle(){
@@ -93,7 +93,7 @@ function DOMStyle(){
 }
 
 $(function(){
-	$("*").click(function(){
-		$("body").html("hello");
+	$("body").on("click","#bubbleSort",function(){
+		alert("OK");
 	});
 });
