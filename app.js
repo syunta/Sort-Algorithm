@@ -5,7 +5,33 @@ function StartApp(){
 
 function AppBase(){
 	this.test = function(){
-		// TODO;
+		var ui = new UI();
+		ui.draw();
+	}
+}
+function UI(){
+	var dom = new DOM();
+	
+	this.draw = function(){
+		$("body").append( dom.$bubbleSortButton );
+	}
+}
+
+function DOM(){
+	var css = new CSS();
+	
+	this.$bubbleSortButton 
+		= css.defineButton( $("<button>").text("BubbleSort") );
+}
+
+function CSS(){
+	this.defineButton = function($button){
+		$button.css({
+			"width" :"100px",
+			"height":"25px"
+		});
+		
+		return $button;
 	}
 }
 
