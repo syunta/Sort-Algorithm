@@ -11,10 +11,21 @@ function AppBase(){
 }
 function UI(){
 	var dom = new DOM();
+	var layout = new Layout();
 	
 	this.draw = function(){
 		$("body").append( dom.$bubbleSortButton );
 	}
+}
+
+function Layout(){
+	var css = new LayoutStyle();
+	
+	// TODO
+}
+
+function LayoutStyle(){
+	// TODO
 }
 
 function DOM(){
