@@ -5,13 +5,12 @@ function StartApp(){
 
 function AppBase(){
 	this.test = function(){
-		var event = new EventHandler();
-		event.test();
+		// TODO;
 	}
 }
 
-function EventHandler(){
-	this.test = function(){
-		$("body").text("this is a test.");
-	}
-}
+$(function(){
+	$("#bubbleSort").click(function(){
+		$("body").text("hello");
+	});
+});
