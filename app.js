@@ -1,1 +1,5 @@
-document.write("Sort-Algorithm");
+$(
+	function(){
+		$("body").text("hello JQuery");
+	}
+);
