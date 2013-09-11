@@ -31,10 +31,12 @@ function UIAssembler(){
 			prepend(layout.$header).
 			append(layout.$main).
 			append(layout.$footer);
+		$("main").
+			prepend(layout.$buttonPlacement);
 	}
 	
 	var assembleDOM = function(){
-		$("main").
+		$(".buttonPlacement").
 			append(dom.button.$bubbleSort);
 	}
 }
@@ -45,35 +47,43 @@ function Layout(){
 	this.$header = style.defineHeaderCSS( $("<header>") );
 	this.$main = style.defineMainCSS( $("<main>") );
 	this.$footer = style.defineFooterCSS( $("<footer>") );
-//	this.$bottunPlacement = style.defineButtonPlacementCSS( $("<footer>") );
-//	TODO
+	this.$buttonPlacement = style.defineButtonPlacementCSS( $("<div>") );
 }
 
 function LayoutStyle(){
 	this.defineMainCSS = function($main){
 		$main.css({
-			"width" :"100%",
-			"height" :"500px",
+			"width": "100%",
+			"height": "500px",
 		});
 		return $main;
 	}
 	
 	this.defineHeaderCSS = function($header){
 		$header.css({
-			"width" :"100%",
-			"height" :"50px",
-			"background-color" :"black",
+			"width": "100%",
+			"height": "50px",
+			"background-color": "black",
 		});
 		return $header;
 	}
 	
 	this.defineFooterCSS = function($footer){
 		$footer.css({
-			"width" :"100%",
-			"height" :"50px",
-			"background-color" :"black",
+			"width": "100%",
+			"height": "50px",
+			"background-color": "black",
 		});
 		return $footer;
+	}
+	
+	this.defineButtonPlacementCSS = function($buttonPlacement){
+		$buttonPlacement.addClass("buttonPlacement");
+		$buttonPlacement.css({
+			"width": "100%",
+			"background-color": "gray",
+		});
+		return $buttonPlacement;
 	}
 }
 
@@ -81,7 +91,7 @@ function DOM(){
 	this.button = new Button();
 }
 
-function Button(buttonName){
+function Button(){
 	var basic = new ButtonBasicSetup();
 	var style = new ButtonStyle();
 	
