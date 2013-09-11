@@ -37,7 +37,7 @@ function UIAssembler(){
 	
 	var assembleDOM = function(){
 		$(".buttonPlacement").
-			append(dom.button.$bubbleSort);
+			append(dom.$bubbleSort.button);
 	}
 }
 
@@ -88,14 +88,14 @@ function LayoutStyle(){
 }
 
 function DOM(){
-	this.button = new Button();
+	this.$bubbleSort = new Button("BubbleSort");
 }
 
-function Button(){
+function Button(buttonName){
 	var basic = new ButtonBasicSetup();
 	var style = new ButtonStyle();
 	
-	this.$bubbleSort = style.defineButtonCSS( basic.setup("BubbleSort") );
+	this.button = style.defineButtonCSS( basic.setup(buttonName) );
 }
 
 function ButtonBasicSetup(){
