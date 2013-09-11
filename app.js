@@ -40,17 +40,17 @@ function UIAssembler(){
 }
 
 function Layout(){
-	var css = new LayoutStyle();
+	var style = new LayoutStyle();
 	
-	this.$header = css.defineHeader( $("<header>") );
-	this.$main = css.defineMain( $("<main>") );
-	this.$footer = css.defineFooter( $("<footer>") );
-//	this.$bottunPlacement = css.defineButtonPlacement( $("<footer>") );
+	this.$header = style.defineHeaderCSS( $("<header>") );
+	this.$main = style.defineMainCSS( $("<main>") );
+	this.$footer = style.defineFooterCSS( $("<footer>") );
+//	this.$bottunPlacement = style.defineButtonPlacementCSS( $("<footer>") );
 //	TODO
 }
 
 function LayoutStyle(){
-	this.defineMain = function($main){
+	this.defineMainCSS = function($main){
 		$main.css({
 			"width" :"100%",
 			"height" :"500px",
@@ -58,7 +58,7 @@ function LayoutStyle(){
 		return $main;
 	}
 	
-	this.defineHeader = function($header){
+	this.defineHeaderCSS = function($header){
 		$header.css({
 			"width" :"100%",
 			"height" :"50px",
@@ -67,7 +67,7 @@ function LayoutStyle(){
 		return $header;
 	}
 	
-	this.defineFooter = function($footer){
+	this.defineFooterCSS = function($footer){
 		$footer.css({
 			"width" :"100%",
 			"height" :"50px",
@@ -83,9 +83,9 @@ function DOM(){
 
 function Button(buttonName){
 	var basic = new ButtonBasicSetup();
-	var css = new ButtonStyle();
+	var style = new ButtonStyle();
 	
-	this.$bubbleSort = css.defineButton( basic.setup("BubbleSort") );
+	this.$bubbleSort = style.defineButtonCSS( basic.setup("BubbleSort") );
 }
 
 function ButtonBasicSetup(){
@@ -96,7 +96,7 @@ function ButtonBasicSetup(){
 }
 
 function ButtonStyle(){
-	this.defineButton = function($button){
+	this.defineButtonCSS = function($button){
 		$button.css({
 			"width" :"100px",
 			"height":"25px"
