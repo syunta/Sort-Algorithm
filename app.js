@@ -35,7 +35,7 @@ function UIAssembler(){
 	
 	var assembleDOM = function(){
 		$("main").
-			append(dom.$bubbleSort.button);
+			append(dom.button.$bubbleSort);
 	}
 }
 
@@ -45,6 +45,8 @@ function Layout(){
 	this.$header = css.defineHeader( $("<header>") );
 	this.$main = css.defineMain( $("<main>") );
 	this.$footer = css.defineFooter( $("<footer>") );
+//	this.$bottunPlacement = css.defineButtonPlacement( $("<footer>") );
+//	TODO
 }
 
 function LayoutStyle(){
@@ -76,13 +78,21 @@ function LayoutStyle(){
 }
 
 function DOM(){
-	this.$bubbleSort = new Button("BubbleSort");
+	this.button = new Button();
 }
 
 function Button(buttonName){
+	var basic = new ButtonBasicSetup();
 	var css = new ButtonStyle();
 	
-	this.button = css.defineButton( $("<button>").text(buttonName).attr("id",buttonName) );
+	this.$bubbleSort = css.defineButton( basic.setup("BubbleSort") );
+}
+
+function ButtonBasicSetup(){
+	this.setup = function(buttonName){
+		var $button = $("<button>").text(buttonName).attr("id",buttonName);
+		return $button;
+	}
 }
 
 function ButtonStyle(){
