@@ -32,13 +32,14 @@ function UIAssembler(){
 			append(layout.$main).
 			append(layout.$footer);
 		$("main").
-			prepend(layout.$buttonPlacement);
+			prepend(layout.$buttonPlacement).
+			append(layout.$cardPlacement);
 	}
 	
 	var assembleDOM = function(){
 		$(".buttonPlacement").
 			append(dom.$bubbleSort.button);
-		$("main").
+		$(".cardPlacement").
 			append(dom.$1.card);
 	}
 }
@@ -50,6 +51,7 @@ function Layout(){
 	this.$main = style.defineMainCSS( $("<main>") );
 	this.$footer = style.defineFooterCSS( $("<footer>") );
 	this.$buttonPlacement = style.defineButtonPlacementCSS( $("<div>") );
+	this.$cardPlacement = style.defineCardPlacementCSS( $("<div>") );
 }
 
 function LayoutStyle(){
@@ -87,6 +89,16 @@ function LayoutStyle(){
 		});
 		return $buttonPlacement;
 	}
+	
+	this.defineCardPlacementCSS = function($cardPlacement){
+		$cardPlacement.addClass("cardPlacement");
+		$cardPlacement.css({
+			"width": "100%",
+			"height":"100%",
+			"background-color": "#c0c0c0",
+		});
+		return $cardPlacement;
+	}
 }
 
 function DOM(){
@@ -119,6 +131,7 @@ function CardStyle(){
 			"border":"3px solid black",
 			"width" :"100px",
 			"height":"161px",
+			"background-color":"white",
 			"border-radius":"15px",
 		});
 		return $card;
