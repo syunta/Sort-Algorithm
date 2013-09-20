@@ -38,6 +38,8 @@ function UIAssembler(){
 	var assembleDOM = function(){
 		$(".buttonPlacement").
 			append(dom.$bubbleSort.button);
+		$("main").
+			append(dom.$1.card);
 	}
 }
 
@@ -89,6 +91,38 @@ function LayoutStyle(){
 
 function DOM(){
 	this.$bubbleSort = new Button("BubbleSort");
+	this.$1 = new Card("1");
+}
+
+function Card(cardName){
+	var basic = new CardBasicSetup();
+	var style = new CardStyle();
+	
+	this.card = style.defineCardCSS( basic.setup(cardName) );
+}
+
+function CardBasicSetup(){
+	this.setup = function(cardName){
+		var $card = $("<div>").text(cardName).attr("id",cardName);
+		return $card;
+	}
+}
+
+function CardStyle(){
+	this.defineCardCSS = function($card){
+		$card.css({
+			"position":"relative",
+			"text-align":"center",
+			"line-height":"161px",
+			"font-size":"100px",
+			"font-weight":"bold",
+			"border":"3px solid black",
+			"width" :"100px",
+			"height":"161px",
+			"border-radius":"15px",
+		});
+		return $card;
+	}
 }
 
 function Button(buttonName){
@@ -117,6 +151,9 @@ function ButtonStyle(){
 
 $(function(){
 	$("body").on("click","#BubbleSort",function(){
-		alert("OK");
+		$("#1").animate({
+			"left":"+=100px",
+			"top":"+=1px"
+		});
 	});
 });
