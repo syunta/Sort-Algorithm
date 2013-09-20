@@ -38,9 +38,9 @@ function UIAssembler(){
 	
 	var assembleDOM = function(){
 		$(".buttonPlacement").
-			append(dom.$bubbleSort.button);
+			append(dom.$bubbleSortButton);
 		$(".cardPlacement").
-			append(dom.$1.card);
+			append(dom.$1);
 	}
 }
 
@@ -55,6 +55,7 @@ function Layout(){
 }
 
 function LayoutStyle(){
+	
 	this.defineMainCSS = function($main){
 		$main.css({
 			"width": "100%",
@@ -102,15 +103,21 @@ function LayoutStyle(){
 }
 
 function DOM(){
-	this.$bubbleSort = new Button("BubbleSort");
-	this.$1 = new Card("1");
+	var card = new Card();
+	var button = new Button();
+
+	this.$bubbleSortButton = button.create("BubbleSort");
+	this.$1 = card.create("1");
 }
 
-function Card(cardName){
+function Card(){
 	var basic = new CardBasicSetup();
 	var style = new CardStyle();
 	
-	this.card = style.defineCardCSS( basic.setup(cardName) );
+	this.create = function(cardName){
+		var $card = style.defineCardCSS( basic.setup(cardName) );
+		return $card;
+	}
 }
 
 function CardBasicSetup(){
@@ -124,6 +131,7 @@ function CardStyle(){
 	this.defineCardCSS = function($card){
 		$card.css({
 			"position":"relative",
+			"top":"30%",
 			"text-align":"center",
 			"line-height":"161px",
 			"font-size":"100px",
@@ -131,6 +139,7 @@ function CardStyle(){
 			"border":"3px solid black",
 			"width" :"100px",
 			"height":"161px",
+			"vertical-align":"middle",
 			"background-color":"white",
 			"border-radius":"15px",
 		});
@@ -138,11 +147,14 @@ function CardStyle(){
 	}
 }
 
-function Button(buttonName){
+function Button(){
 	var basic = new ButtonBasicSetup();
 	var style = new ButtonStyle();
-	
-	this.button = style.defineButtonCSS( basic.setup(buttonName) );
+
+	this.create = function(buttonName){
+		var $button = style.defineButtonCSS( basic.setup(buttonName) );
+		return $button;
+	}
 }
 
 function ButtonBasicSetup(){
