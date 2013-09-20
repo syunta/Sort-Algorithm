@@ -18,8 +18,6 @@ function UI(){
 }
 
 function UIAssembler(){
-	var dom = new DOM();
-	var layout = new Layout();
 	
 	this.assemble = function(){
 		assembleLayout();
@@ -27,6 +25,8 @@ function UIAssembler(){
 	}
 	
 	var assembleLayout = function(){
+		var layout = new Layout();
+		
 		$("body").
 			prepend(layout.header).
 			append(layout.main).
@@ -37,10 +37,21 @@ function UIAssembler(){
 	}
 	
 	var assembleDOM = function(){
+		var dom = new DOM();
+		var cardSetting = new CardSetting();
+
 		$(".buttonPlacement").
 			append(dom.bubbleSortButton);
-		$(".cardPlacement").
-			append(dom.cards[0]);
+		cardSetting.set(dom.cards);
+	}
+}
+
+function CardSetting(){
+	this.set = function(cards){
+		for(var i = 0; i < cards.length; i++){
+			$(".cardPlacement").
+				append(cards[i]);
+		}	
 	}
 }
 
