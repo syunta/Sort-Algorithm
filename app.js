@@ -40,7 +40,7 @@ function UIAssembler(){
 		$(".buttonPlacement").
 			append(dom.bubbleSortButton);
 		$(".cardPlacement").
-			append(dom.card1);
+			append(dom.cards[0]);
 	}
 }
 
@@ -103,11 +103,22 @@ function LayoutStyle(){
 }
 
 function DOM(){
-	var card = new Card();
+	var cardCreator = new CardCreator();
 	var button = new Button();
 
 	this.bubbleSortButton = button.create("BubbleSort");
-	this.card1 = card.create("1");
+	this.cards = cardCreator.create();
+}
+
+function CardCreator(){
+	var card = new Card();
+
+	this.create = function(){
+		var cards = [];
+		
+		cards[0] = card.create("0");
+		return cards;
+	}	
 }
 
 function Card(){
@@ -176,7 +187,7 @@ function ButtonStyle(){
 
 $(function(){
 	$("body").on("click","#BubbleSort",function(){
-		$("#1").animate({
+		$("#0").animate({
 			"left":"+=100px",
 			"top":"+=1px"
 		});
