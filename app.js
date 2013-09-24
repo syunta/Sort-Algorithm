@@ -43,7 +43,8 @@ function UIAssembler(){
 		var cardSetter = new CardSetter();
 
 		$(".buttonPlacement").
-			append(dom.bubbleSortButton);
+			append(dom.bubbleSortButton).
+			append(dom.shuffleButton);
 		cardSetter.set(dom.cards);
 	}
 }
@@ -56,18 +57,9 @@ function CardSetter(){
 		cards = cardShuffler.shuffle(cards);
 		var currentIndex = firstIndexSercher.serch(cards);
 		var nextIndex = cards[currentIndex].next;
-		console.log(currentIndex);
-		console.log(nextIndex);
 		
-		for(var i = 0; i < CARD_NUMBERS; i++){
-			console.log(i + "番目");
-			console.log(cards[i].prev);
-			console.log(cards[i].next);
-		}
 		while(cards[nextIndex].next != null){
-			
 			$(".cardPlacement").append(cards[currentIndex].card);
-			
 			currentIndex = nextIndex;
 			nextIndex = cards[currentIndex].next;
 		}
@@ -170,6 +162,7 @@ function DOM(){
 	var button = new Button();
 
 	this.bubbleSortButton = button.create("BubbleSort");
+	this.shuffleButton = button.create("Shuffle");
 	this.cards = cardCreator.create();
 }
 
@@ -265,6 +258,13 @@ $(function(){
 			"top":"+=1px"
 		});
 	});
+	$("body").on("click","#Shuffle",function(){
+		$("#0").animate({
+			"left":"+=100px",
+			"top":"+=1px"
+		});
+	});
+
 });
 
 function IndexSetter(){	
