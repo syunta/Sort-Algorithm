@@ -58,10 +58,14 @@ function CardSetter(){
 		var currentIndex = firstIndexSercher.serch(cards);
 		var nextIndex = cards[currentIndex].next;
 		
+		var delayTime = 0;
 		while(cards[nextIndex].next != null){
 			$(".cardPlacement").append(cards[currentIndex].card);
+			cards[currentIndex].card.delay(delayTime).animate({height:"show",opacity:"show"},"normal");
 			currentIndex = nextIndex;
 			nextIndex = cards[currentIndex].next;
+
+			delayTime += 100;
 		}
 	}
 }
@@ -213,10 +217,10 @@ function CardStyle(){
 			"border":"3px solid black",
 			"width" :"50px",
 			"height":"80px",
-			"vertical-align":"middle",
 			"background-color":"white",
 			"border-radius":"10px",
 
+			"display":"none",
 			"float":"left",
 			"margin":"2px",
 		});
