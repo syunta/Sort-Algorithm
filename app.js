@@ -52,8 +52,15 @@ function CardSetting(){
 	this.set = function(cards){
 		for(var i = 0; i < CARD_NUMBERS; i++){
 			$(".cardPlacement").
-				append(cards[i]);
+				append(cards[i].card);
 		}	
+
+
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			console.log( (i+1) + "番目");
+			console.log(cards[i].prev);
+			console.log(cards[i].next);
+		}
 	}
 }
 
@@ -130,10 +137,30 @@ function CardCreator(){
 		var cards = [];
 
 		for(var i = 0; i < CARD_NUMBERS; i++){
-			cards[i] = card.create(i);
+			cards[i] = {
+				card:card.create(i),
+				prev:setPrevNumber(i),
+				next:setNextNumber(i)
+			};
 		}
 		return cards;
 	}	
+
+	var setPrevNumber = function(indexNumber){
+		if(indexNumber == 0){
+			return null;
+		}else{
+			return (indexNumber - 1);	
+		}
+	}
+
+	var setNextNumber = function(indexNumber){
+		if(indexNumber == CARD_NUMBERS-1){
+			return null;
+		}else{
+			return (indexNumber + 1);	
+		}
+	}
 }
 
 function Card(){
