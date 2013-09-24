@@ -1,3 +1,5 @@
+var CARD_NUMBERS = 20;
+
 function StartApp(){
 	var app = new AppBase();
 	app.start();
@@ -48,7 +50,7 @@ function UIAssembler(){
 
 function CardSetting(){
 	this.set = function(cards){
-		for(var i = 0; i < cards.length; i++){
+		for(var i = 0; i < CARD_NUMBERS; i++){
 			$(".cardPlacement").
 				append(cards[i]);
 		}	
@@ -70,7 +72,7 @@ function LayoutStyle(){
 	this.defineMainCSS = function(main){
 		main.css({
 			"width": "100%",
-			"height": "500px",
+			"height": "420px",
 		});
 		return main;
 	}
@@ -126,8 +128,10 @@ function CardCreator(){
 
 	this.create = function(){
 		var cards = [];
-		
-		cards[0] = card.create("0");
+
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			cards[i] = card.create(i);
+		}
 		return cards;
 	}	
 }
@@ -155,15 +159,18 @@ function CardStyle(){
 			"position":"relative",
 			"top":"30%",
 			"text-align":"center",
-			"line-height":"161px",
-			"font-size":"100px",
+			"line-height":"80px",
+			"font-size":"50px",
 			"font-weight":"bold",
 			"border":"3px solid black",
-			"width" :"100px",
-			"height":"161px",
+			"width" :"50px",
+			"height":"80px",
 			"vertical-align":"middle",
 			"background-color":"white",
-			"border-radius":"15px",
+			"border-radius":"10px",
+
+			"float":"left",
+			"margin":"2px",
 		});
 		return card;
 	}
