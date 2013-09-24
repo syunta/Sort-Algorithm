@@ -40,29 +40,41 @@ function UIAssembler(){
 	
 	var assembleDOM = function(){
 		var dom = new DOM();
-		var cardSetting = new CardSetting();
+		var cardSetter = new CardSetter();
 
 		$(".buttonPlacement").
 			append(dom.bubbleSortButton);
-		cardSetting.set(dom.cards);
+		cardSetter.set(dom.cards);
 	}
 }
 
-function CardSetting(){
+function CardSetter(){
 	var cardShuffler = new CardShuffler();
+	var firstIndexSercher = new FirstIndexSercher();
 
 	this.set = function(cards){
 		cards = cardShuffler.shuffle(cards);
-		
-		for(var i = 0; i < CARD_NUMBERS; i++){
-			$(".cardPlacement").
-				append(cards[i].card);
-		}	
+//		var currentIndex = firstIndexSercher.serch(cards);
+//		var nextIndex = cards[currentIndex].next;
+//		console.log(currentIndex);
+//		console.log(nextIndex);
+//		
+//		for(var i = 0; i < CARD_NUMBERS; i++){
+//			console.log(i + "番目");
+//			console.log(cards[i].prev);
+//			console.log(cards[i].next);
+//		}
+//		while(cards[nextIndex].next != null){
+//			
+//			$(".cardPlacement").append(cards[currentIndex].card);
+//			
+//			currentIndex = nextIndex;
+//			nextIndex = cards[currentIndex].next;
+//		}
 	}
 }
 
 function CardShuffler(){
-	var indexSetting = new IndexSetting();
 	var random = new RandomNumberGenerator();
 
 	this.shuffle = function(cards){
@@ -71,19 +83,25 @@ function CardShuffler(){
 			indexList[i] = i;		
 		}
 
+		var randomIndexList = [];
 		for(var i = 0; i < CARD_NUMBERS; i++){
 			var randomIndex = random.getRandom(0,indexList.length-1);	
-			console.log(indexList[randomIndex] );
-			cards[i].prev = indexSetting.setPrevIndex(indexList[randomIndex]);
-			cards[i].next = indexSetting.setNextIndex(indexList[randomIndex]);
-
+			randomIndexList[i] = indexList[randomIndex];
 			indexList.splice(randomIndex,1);
 		}
-		
+
 		for(var i = 0; i < CARD_NUMBERS; i++){
-			console.log( i + "番目");
-			console.log(cards[i].prev);
-			console.log(cards[i].next);
+			if(i == 0){
+				cards[ randomIndexList[i] ].prev = null;
+			}else{
+				cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
+			}
+
+			if(i == CARD_NUMBERS - 1){
+				cards[ randomIndexList[i] ].next = null;
+			}else{
+				cards[ randomIndexList[i] ].next = randomIndexList[i+1];
+			}
 		}
 		return cards;
 	}	
@@ -157,7 +175,7 @@ function DOM(){
 
 function CardCreator(){
 	var card = new Card();
-	var indexSetting = new IndexSetting();
+	var indexSetter = new IndexSetter();
 
 	this.create = function(){
 		var cards = [];
@@ -165,8 +183,8 @@ function CardCreator(){
 		for(var i = 0; i < CARD_NUMBERS; i++){
 			cards[i] = {
 				card:card.create(i),
-				prev:indexSetting.setPrevIndex(i),
-				next:indexSetting.setNextIndex(i)
+				prev:indexSetter.setPrevIndex(i),
+				next:indexSetter.setNextIndex(i)
 			};
 		}
 		return cards;
@@ -249,7 +267,7 @@ $(function(){
 	});
 });
 
-function IndexSetting(){	
+function IndexSetter(){	
 	this.setPrevIndex = function(indexNumber){
 		if(indexNumber == 0){
 			return null;
@@ -271,4 +289,17 @@ function RandomNumberGenerator(){
 	this.getRandom = function(min,max){
 		return	Math.floor(Math.random() * (max - min + 1)) + min;
 	}		
+}
+
+function FirstIndexSercher(){
+	this.serch = function(cards){
+		var firstIndex;
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			if(cards[i].prev == null){
+				firstIndex = i;
+				break;	
+			}
+		}
+		return firstIndex;
+	}
 }
