@@ -54,23 +54,23 @@ function CardSetter(){
 
 	this.set = function(cards){
 		cards = cardShuffler.shuffle(cards);
-//		var currentIndex = firstIndexSercher.serch(cards);
-//		var nextIndex = cards[currentIndex].next;
-//		console.log(currentIndex);
-//		console.log(nextIndex);
-//		
-//		for(var i = 0; i < CARD_NUMBERS; i++){
-//			console.log(i + "番目");
-//			console.log(cards[i].prev);
-//			console.log(cards[i].next);
-//		}
-//		while(cards[nextIndex].next != null){
-//			
-//			$(".cardPlacement").append(cards[currentIndex].card);
-//			
-//			currentIndex = nextIndex;
-//			nextIndex = cards[currentIndex].next;
-//		}
+		var currentIndex = firstIndexSercher.serch(cards);
+		var nextIndex = cards[currentIndex].next;
+		console.log(currentIndex);
+		console.log(nextIndex);
+		
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			console.log(i + "番目");
+			console.log(cards[i].prev);
+			console.log(cards[i].next);
+		}
+		while(cards[nextIndex].next != null){
+			
+			$(".cardPlacement").append(cards[currentIndex].card);
+			
+			currentIndex = nextIndex;
+			nextIndex = cards[currentIndex].next;
+		}
 	}
 }
 
