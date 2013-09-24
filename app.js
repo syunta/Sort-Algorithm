@@ -49,19 +49,44 @@ function UIAssembler(){
 }
 
 function CardSetting(){
+	var cardShuffler = new CardShuffler();
+
 	this.set = function(cards){
+		cards = cardShuffler.shuffle(cards);
+		
 		for(var i = 0; i < CARD_NUMBERS; i++){
 			$(".cardPlacement").
 				append(cards[i].card);
 		}	
+	}
+}
 
+function CardShuffler(){
+	var indexSetting = new IndexSetting();
+	var random = new RandomNumberGenerator();
+
+	this.shuffle = function(cards){
+		var indexList = [];
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			indexList[i] = i;		
+		}
 
 		for(var i = 0; i < CARD_NUMBERS; i++){
-			console.log( (i+1) + "番目");
+			var randomIndex = random.getRandom(0,indexList.length-1);	
+			console.log(indexList[randomIndex] );
+			cards[i].prev = indexSetting.setPrevIndex(indexList[randomIndex]);
+			cards[i].next = indexSetting.setNextIndex(indexList[randomIndex]);
+
+			indexList.splice(randomIndex,1);
+		}
+		
+		for(var i = 0; i < CARD_NUMBERS; i++){
+			console.log( i + "番目");
 			console.log(cards[i].prev);
 			console.log(cards[i].next);
 		}
-	}
+		return cards;
+	}	
 }
 
 function Layout(){
@@ -132,6 +157,7 @@ function DOM(){
 
 function CardCreator(){
 	var card = new Card();
+	var indexSetting = new IndexSetting();
 
 	this.create = function(){
 		var cards = [];
@@ -139,28 +165,12 @@ function CardCreator(){
 		for(var i = 0; i < CARD_NUMBERS; i++){
 			cards[i] = {
 				card:card.create(i),
-				prev:setPrevNumber(i),
-				next:setNextNumber(i)
+				prev:indexSetting.setPrevIndex(i),
+				next:indexSetting.setNextIndex(i)
 			};
 		}
 		return cards;
 	}	
-
-	var setPrevNumber = function(indexNumber){
-		if(indexNumber == 0){
-			return null;
-		}else{
-			return (indexNumber - 1);	
-		}
-	}
-
-	var setNextNumber = function(indexNumber){
-		if(indexNumber == CARD_NUMBERS-1){
-			return null;
-		}else{
-			return (indexNumber + 1);	
-		}
-	}
 }
 
 function Card(){
@@ -238,3 +248,27 @@ $(function(){
 		});
 	});
 });
+
+function IndexSetting(){	
+	this.setPrevIndex = function(indexNumber){
+		if(indexNumber == 0){
+			return null;
+		}else{
+			return (indexNumber - 1);	
+		}
+	}
+
+	this.setNextIndex = function(indexNumber){
+		if(indexNumber == CARD_NUMBERS-1){
+			return null;
+		}else{
+			return (indexNumber + 1);	
+		}
+	}
+}
+
+function RandomNumberGenerator(){
+	this.getRandom = function(min,max){
+		return	Math.floor(Math.random() * (max - min + 1)) + min;
+	}		
+}
