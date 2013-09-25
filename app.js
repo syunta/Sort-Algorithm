@@ -189,13 +189,17 @@ function CardCreator(){
 }
 
 function Card(){
-	var basic = new CardBasicSetup();
-	var style = new CardStyle();
 	
-	this.create = function(cardName){
+}
+
+Card.prototype = {
+	create: function(cardName){
+		var basic = new CardBasicSetup();
+		var style = new CardStyle();
+		
 		var card = style.defineCardCSS( basic.setup(cardName) );
 		return card;
-	}
+	}	
 }
 
 function CardBasicSetup(){
@@ -212,7 +216,7 @@ function CardStyle(){
 			"top":"30%",
 			"text-align":"center",
 			"line-height":"80px",
-			"font-size":"50px",
+			"font-size":"40px",
 			"font-weight":"bold",
 			"border":"3px solid black",
 			"width" :"50px",
