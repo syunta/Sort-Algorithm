@@ -255,16 +255,16 @@ function ButtonStyle(){
 
 $(function(){
 	$("body").on("click","button",function(){
-		var event = new EventHandler();
-		event($(this).attr("id"));
+		var event = new EventHandler($(this).attr("id"));
+		event();
 	});
 });
 
 function EventHandler(eventType){
 	var eventList = new EventList();
 	
-	return function(id){
-		eventList[id]();
+	return function(){
+		eventList[eventType]();
 	}
 }
 
