@@ -1,16 +1,10 @@
 var CARD_NUMBERS = 20;
 
 function StartApp(){
-	var app = new AppBase();
-	app.start();
+	var ui = new UI();
+	ui.draw();
 }
 
-function AppBase(){
-	this.start = function(){
-		var ui = new UI();
-		ui.draw();
-	}
-}
 function UI(){
 	var assembler = new UIAssembler();
 	
