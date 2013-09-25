@@ -171,36 +171,30 @@ function DOM(){
 }
 
 function CardCreator(){
-	var card = new Card();
 	var indexSetter = new IndexSetter();
 
 	this.create = function(){
 		var cards = [];
 
 		for(var i = 0; i < CARD_NUMBERS; i++){
-			cards[i] = {
-				card:card.create(i),
-				prev:indexSetter.setPrevIndex(i),
-				next:indexSetter.setNextIndex(i)
-			};
+			cards[i] = new Card(
+				i,
+				indexSetter.setPrevIndex(i),
+				indexSetter.setNextIndex(i)
+			);
 		}
 		return cards;
 	}	
 }
 
-function Card(){
+function Card(cardName,prev,next){
+	var basic = new CardBasicSetup();
+	var style = new CardStyle();
 	
-}
-
-Card.prototype = {
-	create: function(cardName){
-		var basic = new CardBasicSetup();
-		var style = new CardStyle();
-		
-		var card = style.defineCardCSS( basic.setup(cardName) );
-		return card;
-	}	
-}
+	this.card = style.defineCardCSS( basic.setup(cardName) );
+	this.prev = prev;
+	this.next = next;
+}	
 
 function CardBasicSetup(){
 	this.setup = function(cardName){
