@@ -61,7 +61,7 @@ function CardSetter(){
 		var delayTime = 0;
 		while(cards[nextIndex].next != null){
 			$(".cardPlacement").append(cards[currentIndex].card);
-			cards[currentIndex].card.delay(delayTime).animate({height:"show",opacity:"show"},"normal");
+			cards[currentIndex].card.delay(delayTime).fadeIn();
 			currentIndex = nextIndex;
 			nextIndex = cards[currentIndex].next;
 
@@ -254,20 +254,41 @@ function ButtonStyle(){
 }
 
 $(function(){
-	$("body").on("click","#BubbleSort",function(){
-		$("#0").animate({
-			"left":"+=100px",
-			"top":"+=1px"
-		});
+	$("body").on("click","button",function(){
+		var event = new EventHandler();
+		event($(this).attr("id"));
 	});
-	$("body").on("click","#Shuffle",function(){
-		$("#0").animate({
-			"left":"+=100px",
-			"top":"+=1px"
-		});
-	});
-
 });
+
+function EventHandler(eventType){
+	var eventList = new EventList();
+	
+	return function(id){
+		eventList[id]();
+	}
+}
+
+function EventList(){
+	var bubbleSort = new BubbleSort();
+	var shuffle = new Shuffle();
+
+	return {
+		BubbleSort:bubbleSort,
+		Shuffle:shuffle
+	};
+}
+
+function BubbleSort(){
+	return function(){
+		alert("バブルソートの処理:");	
+	}
+}
+
+function Shuffle(){
+	return function(){
+		alert("シャッフルの処理");	
+	}	
+}
 
 function IndexSetter(){	
 	this.setPrevIndex = function(indexNumber){
