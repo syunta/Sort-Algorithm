@@ -100,29 +100,13 @@ $(function(){
 			}
 
 			function CardSetter(){
-				var firstIndexSercher = new FirstIndexSercher();
-
 				this.set = function(cards){
-
-					for(var i = 0; i < CARD_NUMBERS; i++){
-						console.log(i + "番目");
-						console.log(cards[i].prev);
-						console.log(cards[i].next);
-					}
-					
-					var currentIndex = firstIndexSercher.serch(cards);
-					var nextIndex = cards[currentIndex].next;
-					
 					var delayTime = 0;
-					while(true){
-						$(".cardPlacement").append(cards[currentIndex].card);
-						cards[currentIndex].card.delay(delayTime).fadeIn();
+					for(var i = 0; i < cards.length; i++){
+						$(".cardPlacement").append(cards[i]);
+						cards[i].delay(delayTime).fadeIn();
 						
-						if(nextIndex == null){break;}
-
 						delayTime += 100;
-						currentIndex = nextIndex;
-						nextIndex = cards[currentIndex].next;
 					}
 				}
 			}
@@ -224,34 +208,22 @@ $(function(){
 
 				this.bubbleSortButton = buttonCreator.create("BubbleSort");
 				this.shuffleButton = buttonCreator.create("Shuffle");
-				this.cards = cardCreator.create();
+				this.cards = [];
+
+				for(var cardNumber = 0; cardNumber < CARD_NUMBERS; cardNumber++){
+					this.cards[cardNumber] = cardCreator.create(cardNumber);
+				}
 			}
 
 			function CardCreator(){
-				var indexSetter = new IndexSetter();
-
-				this.create = function(){
-					var cards = [];
-
-					for(var i = 0; i < CARD_NUMBERS; i++){
-						cards[i] = new Card(
-							i,
-							indexSetter.setPrevIndex(i),
-							indexSetter.setNextIndex(i)
-						);
-					}
-					return cards;
-				}	
-			}
-
-			function Card(cardName,prev,next){
 				var basic = new CardBasicSetup();
 				var style = new CardStyle();
-				
-				this.card = style.defineCardCSS( basic.setup(cardName) );
-				this.prev = prev;
-				this.next = next;
-			}	
+
+				this.create = function(cardNumber){
+					var card = style.defineCardCSS( basic.setup(cardNumber) );
+					return card;
+				}
+			}
 
 			function CardBasicSetup(){
 				this.setup = function(cardName){
