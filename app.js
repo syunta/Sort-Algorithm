@@ -12,15 +12,48 @@ $(function(){
 			dataSourceLayer.createUpperLayer();
 		}
 		
+		var cnst = new Constant();
+		var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
+		var cards = doublyLinkedCardsCreator.create();
+
 		function Constant(){
 			this.CARD_NUMBERS = 20;	
 		}
 
-		function DataSource(){
-			var cnst = new Constant();
-			var cards = [];
+		function DoublyLinkedCardsCreator(){
+			var indexSetter = new IndexSetter();
+			this.create = function(){
+				var cards = [];
+				for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
+					cards[cardNumber] = {
+						number: cardNumber,
+						prev  : indexSetter.setPrevIndex(cardNumber),
+						next  : indexSetter.setNextIndex(cardNumber)
+					}
+				}
+				return cards;
+			}
+		}
 
-			
+		function IndexSetter(){	
+			this.setPrevIndex = function(indexNumber){
+				if(indexNumber == 0){
+					return null;
+				}else{
+					return (indexNumber - 1);	
+				}
+			}
+
+			this.setNextIndex = function(indexNumber){
+				if(indexNumber == cnst.CARD_NUMBERS-1){
+					return null;
+				}else{
+					return (indexNumber + 1);	
+				}
+			}
+		}
+
+		function DataSource(){
 			this.createUpperLayer = function(){
 				var UILayer = new UI();
 				var eventListener = new EventListener();
@@ -65,6 +98,7 @@ $(function(){
 			function Shuffle(){
 				return function(){
 					alert(cnst.CARD_NUMBERS);	
+					cnst.CARD_NUMBERS += 1;
 				}	
 			}
 
@@ -284,24 +318,6 @@ $(function(){
 						"height":"25px"
 					});
 					return button;
-				}
-			}
-
-			function IndexSetter(){	
-				this.setPrevIndex = function(indexNumber){
-					if(indexNumber == 0){
-						return null;
-					}else{
-						return (indexNumber - 1);	
-					}
-				}
-
-				this.setNextIndex = function(indexNumber){
-					if(indexNumber == cnst.CARD_NUMBERS-1){
-						return null;
-					}else{
-						return (indexNumber + 1);	
-					}
 				}
 			}
 
