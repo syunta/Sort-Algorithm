@@ -4,19 +4,20 @@ $(function(){
 
 	function StartApp(){
 		var ui = new UI();
+		var eventListener = new EventListener();
+
+		eventListener.set();
 		ui.draw();
 	}
-
+	
 	function UI(){
-		var assembler = new UIAssembler();
-		
 		this.draw = function(){
+			var assembler = new UIAssembler();
 			assembler.assemble();
 		}
 	}
 
 	function UIAssembler(){
-		
 		this.assemble = function(){
 			assembleLayout();
 			assembleDOM();
@@ -249,10 +250,14 @@ $(function(){
 		}
 	}
 
-	$("body").on("click","button",function(){
-		var event = new EventHandler();
-		event($(this).attr("id"));
-	});
+	function EventListener(){
+		this.set = function(){
+			$("body").on("click","button",function(){
+				var eventHandler = new EventHandler();
+				eventHandler($(this).attr("id"));
+			});
+		}
+	}
 
 	function EventHandler(){
 		var eventList = new EventList();
@@ -280,7 +285,7 @@ $(function(){
 
 	function Shuffle(){
 		return function(){
-			alert("シャッフルの処理");	
+			alert(CARD_NUMBERS);	
 		}	
 	}
 
