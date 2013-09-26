@@ -159,10 +159,10 @@ $(function(){
 
 	function DOM(){
 		var cardCreator = new CardCreator();
-		var button = new Button();
+		var buttonCreator = new ButtonCreator();
 
-		this.bubbleSortButton = button.create("BubbleSort");
-		this.shuffleButton = button.create("Shuffle");
+		this.bubbleSortButton = buttonCreator.create("BubbleSort");
+		this.shuffleButton = buttonCreator.create("Shuffle");
 		this.cards = cardCreator.create();
 	}
 
@@ -222,7 +222,7 @@ $(function(){
 		}
 	}
 
-	function Button(){
+	function ButtonCreator(){
 		var basic = new ButtonBasicSetup();
 		var style = new ButtonStyle();
 
@@ -249,17 +249,15 @@ $(function(){
 		}
 	}
 
-	$(function(){
-		$("body").on("click","button",function(){
-			var event = new EventHandler($(this).attr("id"));
-			event();
-		});
+	$("body").on("click","button",function(){
+		var event = new EventHandler();
+		event($(this).attr("id"));
 	});
 
-	function EventHandler(eventType){
+	function EventHandler(){
 		var eventList = new EventList();
 		
-		return function(){
+		return function(eventType){
 			eventList[eventType]();
 		}
 	}
