@@ -14,6 +14,7 @@ $(function(){
 		
 		function DataSource(){
 			var CARD_NUMBERS = 20;
+
 			
 			this.createUpperLayer = function(){
 				var UILayer = new UI();
@@ -21,6 +22,45 @@ $(function(){
 
 				eventListener.set();
 				UILayer.draw();
+			}
+
+			function EventListener(){
+				this.set = function(){
+					$("body").on("click","button",function(){
+						var eventHandler = new EventHandler();
+						eventHandler($(this).attr("id"));
+					});
+				}
+			}
+
+			function EventHandler(){
+				var eventList = new EventList();
+				
+				return function(eventType){
+					eventList[eventType]();
+				}
+			}
+
+			function EventList(){
+				var bubbleSort = new BubbleSort();
+				var shuffle = new Shuffle();
+
+				return {
+					BubbleSort:bubbleSort,
+					Shuffle:shuffle
+				};
+			}
+
+			function BubbleSort(){
+				return function(){
+					alert("バブルソートの処理:");	
+				}
+			}
+
+			function Shuffle(){
+				return function(){
+					alert(CARD_NUMBERS);	
+				}	
 			}
 
 			function UI(){
@@ -60,22 +100,29 @@ $(function(){
 			}
 
 			function CardSetter(){
-				var cardShuffler = new CardShuffler();
 				var firstIndexSercher = new FirstIndexSercher();
 
 				this.set = function(cards){
-					cards = cardShuffler.shuffle(cards);
+
+					for(var i = 0; i < CARD_NUMBERS; i++){
+						console.log(i + "番目");
+						console.log(cards[i].prev);
+						console.log(cards[i].next);
+					}
+					
 					var currentIndex = firstIndexSercher.serch(cards);
 					var nextIndex = cards[currentIndex].next;
 					
 					var delayTime = 0;
-					while(cards[nextIndex].next != null){
+					while(true){
 						$(".cardPlacement").append(cards[currentIndex].card);
 						cards[currentIndex].card.delay(delayTime).fadeIn();
-						currentIndex = nextIndex;
-						nextIndex = cards[currentIndex].next;
+						
+						if(nextIndex == null){break;}
 
 						delayTime += 100;
+						currentIndex = nextIndex;
+						nextIndex = cards[currentIndex].next;
 					}
 				}
 			}
@@ -261,45 +308,6 @@ $(function(){
 					});
 					return button;
 				}
-			}
-
-			function EventListener(){
-				this.set = function(){
-					$("body").on("click","button",function(){
-						var eventHandler = new EventHandler();
-						eventHandler($(this).attr("id"));
-					});
-				}
-			}
-
-			function EventHandler(){
-				var eventList = new EventList();
-				
-				return function(eventType){
-					eventList[eventType]();
-				}
-			}
-
-			function EventList(){
-				var bubbleSort = new BubbleSort();
-				var shuffle = new Shuffle();
-
-				return {
-					BubbleSort:bubbleSort,
-					Shuffle:shuffle
-				};
-			}
-
-			function BubbleSort(){
-				return function(){
-					alert("バブルソートの処理:");	
-				}
-			}
-
-			function Shuffle(){
-				return function(){
-					alert(CARD_NUMBERS);	
-				}	
 			}
 
 			function IndexSetter(){	
