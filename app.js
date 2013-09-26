@@ -48,7 +48,7 @@ $(function(){
 				if(indexNumber == cnst.CARD_NUMBERS-1){
 					return null;
 				}else{
-					return (indexNumber + 1);	
+					return (indexNumber + 1);
 				}
 			}
 		}
@@ -96,10 +96,67 @@ $(function(){
 			}
 
 			function Shuffle(){
-				return function(){
-					alert(cnst.CARD_NUMBERS);	
-					cnst.CARD_NUMBERS += 1;
-				}	
+				var shuffle = function(){
+					bandle();
+					mix();
+					arrange();
+				}
+
+				var bandle = function(){
+					var delayTime = 100;
+					for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
+						$("#"+cardNumber).delay(delayTime).animate({
+							"left":"500px",
+						});
+						delayTime += 100;
+					}
+				}
+			
+				var mix = function(){
+					var random = new RandomNumberGenerator();
+					var indexList = [];
+					
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+						indexList[i] = i;		
+					}
+
+					var randomIndexList = [];
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+						var randomIndex = random.getRandom(0,indexList.length-1);	
+						randomIndexList[i] = indexList[randomIndex];
+						indexList.splice(randomIndex,1);
+					}
+
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+						if(i == 0){
+							cards[ randomIndexList[i] ].prev = null;
+						}else{
+							cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
+						}
+
+						if(i == cnst.CARD_NUMBERS - 1){
+							cards[ randomIndexList[i] ].next = null;
+						}else{
+							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
+						}
+					}
+
+					
+
+//					var string = "";
+//					
+//					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+//						string += i + "番目\n";
+//						string += cards[i].prev + "\n";
+//						string += cards[i].next + "\n";
+//					}
+//					alert(string);
+				}
+
+				var arrange = function(){
+						
+				}
+				return shuffle;
 			}
 
 			function UI(){
@@ -142,45 +199,13 @@ $(function(){
 				this.set = function(cards){
 					var delayTime = 0;
 					for(var i = 0; i < cards.length; i++){
+						cards[i].css({"left":(i*60)+"px"});
 						$(".cardPlacement").append(cards[i]);
 						cards[i].delay(delayTime).fadeIn();
 						
 						delayTime += 100;
 					}
 				}
-			}
-
-			function CardShuffler(){
-				var random = new RandomNumberGenerator();
-
-				this.shuffle = function(cards){
-					var indexList = [];
-					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-						indexList[i] = i;		
-					}
-
-					var randomIndexList = [];
-					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-						var randomIndex = random.getRandom(0,indexList.length-1);	
-						randomIndexList[i] = indexList[randomIndex];
-						indexList.splice(randomIndex,1);
-					}
-
-					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-						if(i == 0){
-							cards[ randomIndexList[i] ].prev = null;
-						}else{
-							cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
-						}
-
-						if(i == cnst.CARD_NUMBERS - 1){
-							cards[ randomIndexList[i] ].next = null;
-						}else{
-							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
-						}
-					}
-					return cards;
-				}	
 			}
 
 			function Layout(){
@@ -233,6 +258,7 @@ $(function(){
 				this.defineCardPlacementCSS = function(cardPlacement){
 					cardPlacement.addClass("cardPlacement");
 					cardPlacement.css({
+						"position":"relative",
 						"width": "100%",
 						"height":"100%",
 						"background-color": "#c0c0c0",
@@ -274,7 +300,7 @@ $(function(){
 			function CardStyle(){
 				this.defineCardCSS = function(card){
 					card.css({
-						"position":"relative",
+						"position":"absolute",
 						"top":"30%",
 						"text-align":"center",
 						"line-height":"80px",
@@ -288,7 +314,6 @@ $(function(){
 
 						"display":"none",
 						"float":"left",
-						"margin":"2px",
 					});
 					return card;
 				}
