@@ -12,8 +12,13 @@ $(function(){
 			dataSourceLayer.createUpperLayer();
 		}
 		
+		function Constant(){
+			this.CARD_NUMBERS = 20;	
+		}
+
 		function DataSource(){
-			var CARD_NUMBERS = 20;
+			var cnst = new Constant();
+			var cards = [];
 
 			
 			this.createUpperLayer = function(){
@@ -59,7 +64,7 @@ $(function(){
 
 			function Shuffle(){
 				return function(){
-					alert(CARD_NUMBERS);	
+					alert(cnst.CARD_NUMBERS);	
 				}	
 			}
 
@@ -116,25 +121,25 @@ $(function(){
 
 				this.shuffle = function(cards){
 					var indexList = [];
-					for(var i = 0; i < CARD_NUMBERS; i++){
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						indexList[i] = i;		
 					}
 
 					var randomIndexList = [];
-					for(var i = 0; i < CARD_NUMBERS; i++){
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						var randomIndex = random.getRandom(0,indexList.length-1);	
 						randomIndexList[i] = indexList[randomIndex];
 						indexList.splice(randomIndex,1);
 					}
 
-					for(var i = 0; i < CARD_NUMBERS; i++){
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						if(i == 0){
 							cards[ randomIndexList[i] ].prev = null;
 						}else{
 							cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
 						}
 
-						if(i == CARD_NUMBERS - 1){
+						if(i == cnst.CARD_NUMBERS - 1){
 							cards[ randomIndexList[i] ].next = null;
 						}else{
 							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
@@ -210,7 +215,7 @@ $(function(){
 				this.shuffleButton = buttonCreator.create("Shuffle");
 				this.cards = [];
 
-				for(var cardNumber = 0; cardNumber < CARD_NUMBERS; cardNumber++){
+				for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
 					this.cards[cardNumber] = cardCreator.create(cardNumber);
 				}
 			}
@@ -292,7 +297,7 @@ $(function(){
 				}
 
 				this.setNextIndex = function(indexNumber){
-					if(indexNumber == CARD_NUMBERS-1){
+					if(indexNumber == cnst.CARD_NUMBERS-1){
 						return null;
 					}else{
 						return (indexNumber + 1);	
@@ -309,7 +314,7 @@ $(function(){
 			function FirstIndexSercher(){
 				this.serch = function(cards){
 					var firstIndex;
-					for(var i = 0; i < CARD_NUMBERS; i++){
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						if(cards[i].prev == null){
 							firstIndex = i;
 							break;	
