@@ -107,24 +107,32 @@ $(function(){
 			}
 
 			function Shuffle(){
-				var delayTime = 0;
+				return function(){
+					var cardBundler = new CardBundler();
+					var cardMixer = new CardMixer();
+					var cardArranger = new CardArranger();
 
-				var shuffle = function(){
-					bandle();
-					mix();
-					arrange();
+					timer.reset();
+
+					cardBundler.bundle();
+					cardMixer.mix();
+					cardArranger.arrange();
 				}
+			}
 
-				var bandle = function(){
+			function CardBundler(){
+				this.bundle = function(){
 					for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
-						$("#"+cardNumber).delay(delayTime).animate({
+						$("#"+cardNumber).delay(timer.delay).animate({
 							"left":"0px",
 						});
-						delayTime += 100;
+						timer.add(100);
 					}
-				}
-			
-				var mix = function(){
+				}	
+			}
+
+			function CardMixer(){
+				this.mix = function(){
 					var random = new RandomNumberGenerator();
 					var indexList = [];
 					
@@ -152,17 +160,18 @@ $(function(){
 							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
 						}
 					}
-				}
+				}	
+			}
 
-				var arrange = function(){
+			function CardArranger(){
+				this.arrange = function(){
 					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-						$("#"+i).delay(delayTime).animate({
+						$("#"+i).delay(timer.delay).animate({
 							"left": (i*60)+"px"
 						});
-						delayTime += 50;
+						timer.add(50);
 					}
 				}
-				return shuffle;
 			}
 
 			function UI(){
