@@ -358,8 +358,8 @@ $(function(){
 				}		
 			}
 
-			function FirstIndexSercher(){
-				this.serch = function(cards){
+			function FirstIndexFinder(){
+				this.find = function(cards){
 					var firstIndex;
 					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						if(cards[i].prev == null){
