@@ -102,6 +102,11 @@ $(function(){
 
 			function BubbleSort(){
 				return function(){
+					var indexFinder = new IndexFinder();
+
+					var lastIndex = indexFinder.findLast(cards);
+
+					alert(lastIndex);
 				}
 			}
 
@@ -377,7 +382,7 @@ $(function(){
 					var lastIndex;
 					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						if(cards[i].next == null){
-							firstIndex = i;
+							lastIndex = i;
 							break;	
 						}
 					}
