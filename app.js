@@ -18,7 +18,7 @@ $(function(){
 		var cards = doublyLinkedCardsCreator.create();
 
 		function Constant(){
-			this.CARD_NUMBERS = 20;	
+			this.CARD_NUMBERS = 5;	
 		}
 
 		function DoublyLinkedCardsCreator(){
@@ -102,7 +102,6 @@ $(function(){
 
 			function BubbleSort(){
 				return function(){
-					alert("バブルソートの処理:");	
 				}
 			}
 
@@ -153,8 +152,8 @@ $(function(){
 
 			function CardArranger(){
 				this.arrange = function(additionalTime,additionalMoveLength){
-					var firstIndexFinder = new FirstIndexFinder();
-					var currentIndex = firstIndexFinder.find(cards);
+					var indexFinder = new IndexFinder();
+					var currentIndex = indexFinder.findFirst(cards);
 					var nextIndex = cards[currentIndex].next;
 					var moveLength = 0;
 
@@ -363,8 +362,8 @@ $(function(){
 				}		
 			}
 
-			function FirstIndexFinder(){
-				this.find = function(cards){
+			function IndexFinder(){
+				this.findFirst = function(cards){
 					var firstIndex;
 					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 						if(cards[i].prev == null){
@@ -373,6 +372,16 @@ $(function(){
 						}
 					}
 					return firstIndex;
+				}
+				this.findLast = function(cards){
+					var lastIndex;
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+						if(cards[i].next == null){
+							firstIndex = i;
+							break;	
+						}
+					}
+					return lastIndex;
 				}
 			}
 		}
