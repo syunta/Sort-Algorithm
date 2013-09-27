@@ -108,27 +108,15 @@ $(function(){
 
 			function Shuffle(){
 				return function(){
-					var cardBundler = new CardBundler();
 					var cardMixer = new CardMixer();
 					var cardArranger = new CardArranger();
 
 					timer.reset();
 
-					cardBundler.bundle();
+					cardArranger.arrange(100,0);
 					cardMixer.mix();
-					cardArranger.arrange();
+					cardArranger.arrange(40,60);
 				}
-			}
-
-			function CardBundler(){
-				this.bundle = function(){
-					for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
-						$("#"+cardNumber).delay(timer.delay).animate({
-							"left":"0px",
-						});
-						timer.add(100);
-					}
-				}	
 			}
 
 			function CardMixer(){
@@ -164,12 +152,21 @@ $(function(){
 			}
 
 			function CardArranger(){
-				this.arrange = function(){
-					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-						$("#"+i).delay(timer.delay).animate({
-							"left": (i*60)+"px"
-						});
-						timer.add(50);
+				this.arrange = function(additionalTime,additionalMoveLength){
+					var firstIndexFinder = new FirstIndexFinder();
+					var currentIndex = firstIndexFinder.find(cards);
+					var nextIndex = cards[currentIndex].next;
+					var moveLength = 0;
+
+					while(true){
+						$("#"+cards[currentIndex].number).delay(timer.delay).animate({"left":(moveLength)+"px",});
+						
+						if(nextIndex == null){break;}
+						
+						timer.add(additionalTime);
+						moveLength += additionalMoveLength;
+						currentIndex = nextIndex;
+						nextIndex = cards[currentIndex].next;
 					}
 				}
 			}
@@ -328,7 +325,6 @@ $(function(){
 						"border-radius":"10px",
 
 						"display":"none",
-						"float":"left",
 					});
 					return card;
 				}
