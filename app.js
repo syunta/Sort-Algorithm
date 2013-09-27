@@ -102,12 +102,51 @@ $(function(){
 
 			function BubbleSort(){
 				return function(){
+					timer.reset();
+
 					var indexFinder = new IndexFinder();
+					var comparer = new CardComparer();
+					var swapper = new Swapper();
 
-					var lastIndex = indexFinder.findLast(cards);
+					var currentIndex = indexFinder.findLast(cards);
+					var prevIndex = cards[currentIndex].prev;
 
-					alert(lastIndex);
+					if( comparer.compare(cards[currentIndex].number,cards[prevIndex].number) ){
+						swapper.swap();
+					}
 				}
+			}
+
+			function CardComparer(){
+				this.compare = function(referenceNumber,comparisonNumber){
+					if(comparisonNumber < referenceNumber){
+						return true;
+					}else if(referenceNumber <= comparisonNumber){
+						return false;	
+					}
+				}	
+			}
+
+			function Swapper(){
+				var cardSwapper = new CardSwapper();
+				var domSwapper = new DOMSwapper();
+
+				this.swap = function(){
+					cardSwapper.swap();
+					domSwapper.swap(timer.delay);
+				}
+			}
+
+			function CardSwapper(){
+				this.swap = function(){
+					return alert("SWAP");
+				}	
+			}
+
+			function DOMSwapper(){
+				this.swap = function(delayTime){
+					return false;
+				}	
 			}
 
 			function Shuffle(){
