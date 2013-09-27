@@ -13,6 +13,7 @@ $(function(){
 		}
 		
 		var cnst = new Constant();
+		var timer = new DelayTimer();
 		var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
 		var cards = doublyLinkedCardsCreator.create();
 
@@ -32,6 +33,16 @@ $(function(){
 					}
 				}
 				return cards;
+			}
+		}
+
+		function DelayTimer(){
+			this.delay = 0;
+			this.add = function(additionalTime){
+				this.delay += additionalTime;
+			}
+			this.reset = function(){
+				this.delay = 0;	
 			}
 		}
 
@@ -96,6 +107,8 @@ $(function(){
 			}
 
 			function Shuffle(){
+				var delayTime = 0;
+
 				var shuffle = function(){
 					bandle();
 					mix();
@@ -103,10 +116,9 @@ $(function(){
 				}
 
 				var bandle = function(){
-					var delayTime = 100;
 					for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
 						$("#"+cardNumber).delay(delayTime).animate({
-							"left":"500px",
+							"left":"0px",
 						});
 						delayTime += 100;
 					}
@@ -140,21 +152,15 @@ $(function(){
 							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
 						}
 					}
-
-					
-
-//					var string = "";
-//					
-//					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-//						string += i + "番目\n";
-//						string += cards[i].prev + "\n";
-//						string += cards[i].next + "\n";
-//					}
-//					alert(string);
 				}
 
 				var arrange = function(){
-						
+					for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+						$("#"+i).delay(delayTime).animate({
+							"left": (i*60)+"px"
+						});
+						delayTime += 50;
+					}
 				}
 				return shuffle;
 			}
@@ -197,13 +203,13 @@ $(function(){
 
 			function CardSetter(){
 				this.set = function(cards){
-					var delayTime = 0;
+					timer.reset();
 					for(var i = 0; i < cards.length; i++){
 						cards[i].css({"left":(i*60)+"px"});
 						$(".cardPlacement").append(cards[i]);
-						cards[i].delay(delayTime).fadeIn();
+						cards[i].delay(timer.delay).fadeIn();
 						
-						delayTime += 100;
+						timer.add(100);
 					}
 				}
 			}
