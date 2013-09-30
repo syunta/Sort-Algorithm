@@ -172,25 +172,22 @@ $(function(){
 			function Shuffle(){
 				return function(){
 					var cardBundler = new CardBundler();
-					var cardMixer = new CardMixer();
-					var cardArranger = new CardArranger();
-
-					timer.reset();
-					
-					cardBundler.bundle(cardMixer.mix,cardArranger.arrange);
+					cardBundler.bundle();
 				}
 			}
 
 			function CardBundler(){
-				this.bundle = function(mix,arrange){
+				this.bundle = function(){
 					var indexFinder = new IndexFinder();
+					var cardMixer = new CardMixer();
+
 					var currentIndex = indexFinder.findFirst(cards);
 					var nextIndex = cards[currentIndex].next;
 
 					var move = function(){
 						currentIndex = nextIndex;
 						nextIndex = cards[currentIndex].next;
-						if(nextIndex == null){nextFunction = mix(arrange)}
+						if(nextIndex == null){nextFunction = cardMixer.mix}
 						$("#"+cards[currentIndex].number).animate({"left":"0px"},{
 							duration: 100,
 							complete: nextFunction
@@ -204,7 +201,7 @@ $(function(){
 			}
 
 			function CardMixer(){
-				this.mix = function(arrange){
+				this.mix = function(){
 					var random = new RandomNumberGenerator();
 					var indexList = [];
 					
@@ -233,7 +230,8 @@ $(function(){
 						}
 					}
 
-					arrange();
+					var cardArranger = new CardArranger();
+					cardArranger.arrange();
 				}	
 			}
 
@@ -242,14 +240,14 @@ $(function(){
 					var indexFinder = new IndexFinder();
 					var currentIndex = indexFinder.findFirst(cards);
 					var nextIndex = cards[currentIndex].next;
-					var i = 0;
+					var indexCounter = 0;
 
 					var move = function(){
-						i += 1;
+						indexCounter += 1;
 						currentIndex = nextIndex;
 						nextIndex = cards[currentIndex].next;
 						if(nextIndex == null){nextFunction = stop}
-						$("#"+cards[currentIndex].number).animate({"left":(i*60) + "px"},{
+						$("#"+cards[currentIndex].number).animate({"left":(indexCounter*60) + "px"},{
 							duration: 100,
 							complete: nextFunction
 						});
@@ -259,7 +257,6 @@ $(function(){
 					var nextFunction = move;
 
 					move();
-
 				}
 			}
 
