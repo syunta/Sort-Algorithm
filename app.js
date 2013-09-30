@@ -11,14 +11,14 @@ $(function(){
 			var dataSourceLayer = new DataSource();
 			dataSourceLayer.createUpperLayer();
 		}
-		
+	
 		var cnst = new Constant();
 		var timer = new DelayTimer();
 		var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
 		var cards = doublyLinkedCardsCreator.create();
 
 		function Constant(){
-			this.CARD_NUMBERS = 5;	
+			this.CARD_NUMBERS = 20;	
 		}
 
 		function DoublyLinkedCardsCreator(){
@@ -112,7 +112,7 @@ $(function(){
 					var prevIndex = cards[currentIndex].prev;
 
 					if( comparer.compare(cards[currentIndex].number,cards[prevIndex].number) ){
-						swapper.swap();
+						swapper.recursiveSwap(currentIndex,prevIndex);
 					}
 				}
 			}
@@ -131,39 +131,80 @@ $(function(){
 				var cardSwapper = new CardSwapper();
 				var domSwapper = new DOMSwapper();
 
-				this.swap = function(){
-					cardSwapper.swap();
-					domSwapper.swap(timer.delay);
+				this.recursiveSwap = function(currentIndex,prevIndex){
+					cardSwapper.swap(currentIndex,prevIndex);
 				}
 			}
 
 			function CardSwapper(){
-				this.swap = function(){
-					return alert("SWAP");
+				this.swap = function(currentIndex,prevIndex){
+					var copyNext = cards[currentIndex].next;
+
+					if(cards[ cards[prevIndex].prev ] != null){
+						cards[ cards[prevIndex].prev ].next = cards[currentIndex].number;
+					}
+					if(cards[ cards[currentIndex].next ] != null){
+						cards[ cards[currentIndex].next ].prev = cards[prevIndex].number;
+					}
+
+					cards[currentIndex].next = cards[prevIndex].number;
+					cards[currentIndex].prev = cards[prevIndex].prev;
+					
+					cards[prevIndex].next = copyNext;
+					cards[prevIndex].prev = cards[currentIndex].number;
 				}	
 			}
 
 			function DOMSwapper(){
-				this.swap = function(delayTime){
-					return false;
-				}	
+				this.swap = function(currentIndex,prevIndex,delayTime){
+					var currentPosition = $("#"+cards[currentIndex].number).position();
+					var prevPosition = $("#"+cards[prevIndex].number).position();
+
+					$("#"+cards[currentIndex].number).delay(delayTime).animate({
+						"left":prevPosition.left+"px",
+					});
+					$("#"+cards[prevIndex].number).delay(delayTime).animate({
+						"left":currentPosition.left+"px",
+					});
+				}
 			}
 
 			function Shuffle(){
 				return function(){
+					var cardBundler = new CardBundler();
 					var cardMixer = new CardMixer();
 					var cardArranger = new CardArranger();
 
 					timer.reset();
+					
+					cardBundler.bundle(cardMixer.mix,cardArranger.arrange);
+				}
+			}
 
-					cardArranger.arrange(100,0);
-					cardMixer.mix();
-					cardArranger.arrange(40,60);
+			function CardBundler(){
+				this.bundle = function(mix,arrange){
+					var indexFinder = new IndexFinder();
+					var currentIndex = indexFinder.findFirst(cards);
+					var nextIndex = cards[currentIndex].next;
+
+					var move = function(){
+						currentIndex = nextIndex;
+						nextIndex = cards[currentIndex].next;
+						if(nextIndex == null){nextFunction = mix(arrange)}
+						$("#"+cards[currentIndex].number).animate({"left":"0px"},{
+							duration: 100,
+							complete: nextFunction
+						});
+					}
+					
+					var nextFunction = move;
+
+					move();
 				}
 			}
 
 			function CardMixer(){
-				this.mix = function(){
+				this.mix = function(arrange){
 					var random = new RandomNumberGenerator();
 					var indexList = [];
 					
@@ -191,26 +232,34 @@ $(function(){
 							cards[ randomIndexList[i] ].next = randomIndexList[i+1];
 						}
 					}
+
+					arrange();
 				}	
 			}
 
 			function CardArranger(){
-				this.arrange = function(additionalTime,additionalMoveLength){
+				this.arrange = function(){
 					var indexFinder = new IndexFinder();
 					var currentIndex = indexFinder.findFirst(cards);
 					var nextIndex = cards[currentIndex].next;
-					var moveLength = 0;
+					var i = 0;
 
-					while(true){
-						$("#"+cards[currentIndex].number).delay(timer.delay).animate({"left":(moveLength)+"px",});
-						
-						if(nextIndex == null){break;}
-						
-						timer.add(additionalTime);
-						moveLength += additionalMoveLength;
+					var move = function(){
+						i += 1;
 						currentIndex = nextIndex;
 						nextIndex = cards[currentIndex].next;
+						if(nextIndex == null){nextFunction = stop}
+						$("#"+cards[currentIndex].number).animate({"left":(i*60) + "px"},{
+							duration: 100,
+							complete: nextFunction
+						});
 					}
+					var stop = function(){return;}	
+					
+					var nextFunction = move;
+
+					move();
+
 				}
 			}
 
