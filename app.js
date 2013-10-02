@@ -110,7 +110,6 @@ $(function(){
 					function CardSetter(){
 						this.set = function(cards){
 							timer.reset();
-							console.log(cards.length);
 							for(var i = cards.length-1; 0 <= i; i--){
 								cards[i].css({"left":(((cards.length-1)-i)*60)+"px"});
 								$(".cardPlacement").append(cards[i]);
@@ -302,7 +301,13 @@ $(function(){
 							}
 
 							this.enQueue = function(eventFunction){
-								queue.push(eventFunction);
+								if(eventFunction instanceof Array){
+									for(var i = 0; i < eventFunction.length; i++){
+										this.enQueue(eventFunction[i]);
+									}
+								}else{
+									queue.push(eventFunction);
+								}
 							}
 
 							this.run = function(){
@@ -399,6 +404,23 @@ $(function(){
 								var delayTime = 100;
 								var eventController = new EventController(delayTime);
 
+								var test2 = [
+									function(){console.log(4);},
+									function(){console.log(5);},
+									function(){console.log(6);},
+									function(){console.log(7);},
+									function(){console.log(8);}
+								];
+							
+								var test = [
+									function(){console.log(1);},
+									function(){console.log(2);},
+									function(){console.log(3);},
+									test2,
+									function(){console.log(9);}
+								];
+
+								eventController.enQueue(test);
 								eventController.run();
 							}
 						}
