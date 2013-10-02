@@ -391,11 +391,12 @@ $(function(){
 						function Shuffle(){
 							this.run = function(){
 								var cardArranger = new CardArranger();
+								var cardMixer = new CardMixer();
 								var delayTime = 400;
 								var eventController = new EventController(delayTime);
 
 								eventController.enQueue( function(){cardArranger.arrange(0)} );
-								eventController.enQueue( cardArranger.mix );
+								eventController.enQueue( cardMixer.mix );
 								eventController.enQueue( function(){cardArranger.arrange(60)} );
 								eventController.run();
 							}	
@@ -404,7 +405,6 @@ $(function(){
 						function CardArranger(){
 							var indexFinder = new IndexFinder();
 							var motion = new CardMotion();
-							var random = new RandomNumberGenerator();
 
 							this.arrange = function(additionalMoveLength){
 								var currentIndex = indexFinder.findFirst(cards);
@@ -421,8 +421,11 @@ $(function(){
 									nextIndex = cards[currentIndex].next;
 								}
 							}
+						}
 
+						function CardMixer(){
 							this.mix = function(){
+								var random = new RandomNumberGenerator();
 								var indexList = [];
 								
 								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
