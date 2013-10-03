@@ -340,12 +340,12 @@ $(function(){
 						function Shuffle(){
 							this.run = function(){
 								var cardArranger = new CardArranger();
-								var cardMixer = new CardMixer();
+								var cardController = new CardDataController();
 								var delayTime = 400;
 								var eventController = new EventController(delayTime);
 
 								eventController.enQueue( function(){cardArranger.arrange(0)} );
-								eventController.enQueue( cardMixer.mix );
+								eventController.enQueue( cardController.mix );
 								eventController.enQueue( function(){cardArranger.arrange(60)} );
 								eventController.run();
 							}	
@@ -372,8 +372,10 @@ $(function(){
 							}
 						}
 
-						function CardMixer(){
-							var random = new RandomNumberGenerator();
+						function CardDataController(){
+							this.insert = function(){
+								//TODO	
+							}
 							this.mix = function(){
 								var random = new RandomNumberGenerator();
 								var indexList = [];
@@ -409,39 +411,23 @@ $(function(){
 							this.run = function(){
 								var delayTime = 100;
 								var eventController = new EventController(delayTime);
+								var cardController = new CardDataController();
 
 								var test = function(){
 									var motion = new CardMotion();
 									var indexFinder = new IndexFinder();
+
 									var currentIndex = indexFinder.findLast();
 									var prevIndex = cards[currentIndex].prev;
 
-//									if(cards[currentIndex].number < cards[prevIndex].number){
+									if(cards[currentIndex].number < cards[prevIndex].number){
 										motion.swap(prevIndex,currentIndex);
 										console.log(currentIndex);
 										console.log(prevIndex);
-//									}
+									}
 								}
 								eventController.enQueue(test);
 								eventController.run();
-							}
-						}
-
-						function CardComparer(){
-							this.compare = function(referenceNumber,comparisonNumber){
-								if(comparisonNumber < referenceNumber){
-									return true;
-								}else if(referenceNumber <= comparisonNumber){
-									return false;	
-								}
-							}	
-						}
-
-						function Swapper(){
-							var cardSwapper = new CardSwapper();
-
-							this.recursiveSwap = function(currentIndex,prevIndex){
-								cardSwapper.swap(currentIndex,prevIndex);
 							}
 						}
 
