@@ -11,7 +11,6 @@ $(function(){
 			var dataSourceLayer = new DataSource();
 			dataSourceLayer.createUILayer();
 		}
-	
 
 		/* DataSource */
 		function DataSource(){
@@ -21,7 +20,7 @@ $(function(){
 			var cards = doublyLinkedCardsCreator.create();
 
 			function Constant(){
-				this.CARD_NUMBERS = 5;	
+				this.CARD_NUMBERS = 20;	
 			}
 
 			function DoublyLinkedCardsCreator(){
