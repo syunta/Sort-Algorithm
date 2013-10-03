@@ -21,7 +21,7 @@ $(function(){
 			var cards = doublyLinkedCardsCreator.create();
 
 			function Constant(){
-				this.CARD_NUMBERS = 20;	
+				this.CARD_NUMBERS = 5;	
 			}
 
 			function DoublyLinkedCardsCreator(){
@@ -431,33 +431,44 @@ $(function(){
 							this.run = function(){
 								var delayTime = 410;
 								var eventController = new EventController(delayTime);
+								var motion = new CardMotion();
+								var indexFinder = new IndexFinder();
+								var lastIndexSetter = new LastIndexSetter();
 								var oneStep = new BubbleSortOneStep();
 
+								var currentIndex;
+
 								for(var i = 0; i < cnst.CARD_NUMBERS-1; i++){
-									eventController.enQueue( function(){oneStep();} );
+									eventController.enQueue( lastIndexSetter.set );
+									for(var j = 0; j < ((cnst.CARD_NUMBERS-1) - i); j++){
+										eventController.enQueue( oneStep.excute );
+									}
 								}
 								eventController.run();
+
+								function LastIndexSetter(){
+									this.set = function(){
+										currentIndex = indexFinder.findLast();
+									}	
+								}
+
+								function BubbleSortOneStep(){
+									var cardController = new CardDataController();
+
+									this.excute = function(){
+										var prevIndex = cards[currentIndex].prev;
+
+										if(cards[currentIndex].number < cards[prevIndex].number){
+											motion.swap(prevIndex,currentIndex);
+											cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
+										}else{
+											currentIndex = cards[currentIndex].prev;	
+										}
+									}	
+								}
 							}
 						}
 
-						function BubbleSortOneStep(){
-
-							var cardController = new CardDataController();
-							var indexFinder = new IndexFinder();
-							var motion = new CardMotion();
-							var currentIndex = indexFinder.findLast();
-
-							return function(){
-								var prevIndex = cards[currentIndex].prev;
-
-								if(cards[currentIndex].number < cards[prevIndex].number){
-									motion.swap(prevIndex,currentIndex);
-									cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
-								}else{
-									currentIndex = cards[currentIndex].prev;	
-								}
-							}	
-						}
 
 						function RandomNumberGenerator(){
 							this.getRandom = function(min,max){
