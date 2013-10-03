@@ -390,6 +390,16 @@ $(function(){
 								this.move(cards[currentIndex].number,prevPosition.left);
 								this.move(cards[prevIndex].number,currentPosition.left);
 							}
+							this.changeBackGround = function(target){
+								$("#"+target).css({
+									"background-color":"yellow"	
+								});
+							}
+							this.returnBackGround = function(target){
+								$("#"+target).css({
+									"background-color":"white"	
+								});
+							}
 						}
 
 						function Shuffle(){
@@ -444,11 +454,14 @@ $(function(){
 										eventController.enQueue( oneStep.excute );
 									}
 								}
+								eventController.enQueue( function(){motion.returnBackGround(currentIndex);} );
 								eventController.run();
 
 								function LastIndexSetter(){
 									this.set = function(){
+										motion.returnBackGround(currentIndex);
 										currentIndex = indexFinder.findLast();
+										motion.changeBackGround(currentIndex);
 									}	
 								}
 
@@ -462,7 +475,9 @@ $(function(){
 											motion.swap(prevIndex,currentIndex);
 											cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
 										}else{
+											motion.returnBackGround(currentIndex);
 											currentIndex = cards[currentIndex].prev;	
+											motion.changeBackGround(currentIndex);
 										}
 									}	
 								}
