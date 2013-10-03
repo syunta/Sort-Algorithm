@@ -328,6 +328,13 @@ $(function(){
 							this.move = function(cardNumber,movement){
 								$("#"+cardNumber).animate({"left":movement+"px"});
 							}
+							this.swap = function(currentIndex,prevIndex){
+								var currentPosition = $("#"+cards[currentIndex].number).position();
+								var prevPosition = $("#"+cards[prevIndex].number).position();
+
+								this.move(cards[currentIndex].number,prevPosition.left);
+								this.move(cards[prevIndex].number,currentPosition.left);
+							}
 						}
 
 						function Shuffle(){
@@ -404,14 +411,16 @@ $(function(){
 								var eventController = new EventController(delayTime);
 
 								var test = function(){
+									var motion = new CardMotion();
 									var indexFinder = new IndexFinder();
 									var currentIndex = indexFinder.findLast();
 									var prevIndex = cards[currentIndex].prev;
 
-									if(cards[currentIndex].number < cards[prevIndex].number){
+//									if(cards[currentIndex].number < cards[prevIndex].number){
+										motion.swap(prevIndex,currentIndex);
 										console.log(currentIndex);
 										console.log(prevIndex);
-									}
+//									}
 								}
 								eventController.enQueue(test);
 								eventController.run();
@@ -430,7 +439,6 @@ $(function(){
 
 						function Swapper(){
 							var cardSwapper = new CardSwapper();
-							var domSwapper = new DOMSwapper();
 
 							this.recursiveSwap = function(currentIndex,prevIndex){
 								cardSwapper.swap(currentIndex,prevIndex);
@@ -454,20 +462,6 @@ $(function(){
 								cards[prevIndex].next = copyNext;
 								cards[prevIndex].prev = cards[currentIndex].number;
 							}	
-						}
-
-						function DOMSwapper(){
-							this.swap = function(currentIndex,prevIndex,delayTime){
-								var currentPosition = $("#"+cards[currentIndex].number).position();
-								var prevPosition = $("#"+cards[prevIndex].number).position();
-
-								$("#"+cards[currentIndex].number).delay(delayTime).animate({
-									"left":prevPosition.left+"px",
-								});
-								$("#"+cards[prevIndex].number).delay(delayTime).animate({
-									"left":currentPosition.left+"px",
-								});
-							}
 						}
 
 						function RandomNumberGenerator(){
