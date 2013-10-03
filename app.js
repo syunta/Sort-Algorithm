@@ -28,7 +28,7 @@ $(function(){
 				var indexSetter = new IndexSetter();
 				this.create = function(){
 					var cards = [];
-					for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
+					for(var cardNumber = cnst.CARD_NUMBERS-1; 0 <= cardNumber; cardNumber--){
 						cards[cardNumber] = {
 							number: cardNumber,
 							prev  : indexSetter.setPrevIndex(cardNumber),
@@ -51,18 +51,17 @@ $(function(){
 
 			function IndexSetter(){	
 				this.setPrevIndex = function(indexNumber){
-					if(indexNumber == 0){
-						return null;
-					}else{
-						return (indexNumber - 1);	
-					}
-				}
-
-				this.setNextIndex = function(indexNumber){
 					if(indexNumber == cnst.CARD_NUMBERS-1){
 						return null;
 					}else{
-						return (indexNumber + 1);
+						return (indexNumber + 1);	
+					}
+				}
+				this.setNextIndex = function(indexNumber){
+					if(indexNumber == 0){
+						return null;
+					}else{
+						return (indexNumber - 1);
 					}
 				}
 			}
@@ -350,7 +349,7 @@ $(function(){
 							var motion = new CardMotion();
 
 							this.arrange = function(additionalMoveLength){
-								var currentIndex = indexFinder.findFirst(cards);
+								var currentIndex = indexFinder.findFirst();
 								var nextIndex = cards[currentIndex].next;
 								var moveLength = 0;
 								while(true){
@@ -404,22 +403,16 @@ $(function(){
 								var delayTime = 100;
 								var eventController = new EventController(delayTime);
 
-								var test2 = [
-									function(){console.log(4);},
-									function(){console.log(5);},
-									function(){console.log(6);},
-									function(){console.log(7);},
-									function(){console.log(8);}
-								];
-							
-								var test = [
-									function(){console.log(1);},
-									function(){console.log(2);},
-									function(){console.log(3);},
-									test2,
-									function(){console.log(9);}
-								];
+								var test = function(){
+									var indexFinder = new IndexFinder();
+									var currentIndex = indexFinder.findLast();
+									var prevIndex = cards[currentIndex].prev;
 
+									if(cards[currentIndex].number < cards[prevIndex].number){
+										console.log(currentIndex);
+										console.log(prevIndex);
+									}
+								}
 								eventController.enQueue(test);
 								eventController.run();
 							}
@@ -484,7 +477,7 @@ $(function(){
 						}
 
 						function IndexFinder(){
-							this.findFirst = function(cards){
+							this.findFirst = function(){
 								var firstIndex;
 								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 									if(cards[i].prev == null){
@@ -494,7 +487,7 @@ $(function(){
 								}
 								return firstIndex;
 							}
-							this.findLast = function(cards){
+							this.findLast = function(){
 								var lastIndex;
 								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
 									if(cards[i].next == null){
