@@ -324,6 +324,61 @@ $(function(){
 							}
 						}
 
+						function CardDataController(){
+							this.insert = function(movingCard,left,right){
+								if(cards[movingCard].next != null){
+									cards[ cards[movingCard].next ].prev = cards[movingCard].prev;
+								}
+								if(cards[movingCard].prev != null){
+									cards[ cards[movingCard].prev ].next = cards[movingCard].next;
+								}
+
+								if(left != null){
+									cards[left].next = movingCard;
+									cards[movingCard].prev = left;
+								}else{
+									cards[movingCard].prev = null;	
+								}
+
+								if(right != null){
+									cards[right].prev = movingCard;
+									cards[movingCard].next = right;
+								}else{
+									cards[movingCard].next = null;	
+								}
+							}
+
+							this.mix = function(){
+								var random = new RandomNumberGenerator();
+								var indexList = [];
+								
+								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+									indexList[i] = i;		
+								}
+
+								var randomIndexList = [];
+								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+									var randomIndex = random.getRandom(0,indexList.length-1);	
+									randomIndexList[i] = indexList[randomIndex];
+									indexList.splice(randomIndex,1);
+								}
+
+								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+									if(i == 0){
+										cards[ randomIndexList[i] ].prev = null;
+									}else{
+										cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
+									}
+
+									if(i == cnst.CARD_NUMBERS - 1){
+										cards[ randomIndexList[i] ].next = null;
+									}else{
+										cards[ randomIndexList[i] ].next = randomIndexList[i+1];
+									}
+								}
+							}	
+						}
+
 						function CardMotion(){
 							this.move = function(cardNumber,movement){
 								$("#"+cardNumber).animate({"left":movement+"px"});
@@ -372,106 +427,35 @@ $(function(){
 							}
 						}
 
-						function CardDataController(){
-							this.insert = function(movingCard,left,right){
-								if(cards[movingCard].next != null){
-									cards[ cards[movingCard].next ].prev = cards[movingCard].prev;
-								}
-								if(cards[movingCard].prev != null){
-									cards[ cards[movingCard].prev ].next = cards[movingCard].next;
-								}
-
-								if(left != null){
-									cards[left].next = movingCard;
-									cards[movingCard].prev = left;
-								}else{
-									cards[movingCard].prev = null;	
-								}
-
-								if(right != null){
-									cards[right].prev = movingCard;
-									cards[movingCard].next = right;
-								}else{
-									cards[movingCard].next = null;	
-								}
-
-								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-									console.log(i+"”Ô–Ú");
-									console.log(cards[i].prev);
-									console.log(cards[i].next);
-								}
-							}
-
-							this.mix = function(){
-								var random = new RandomNumberGenerator();
-								var indexList = [];
-								
-								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-									indexList[i] = i;		
-								}
-
-								var randomIndexList = [];
-								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-									var randomIndex = random.getRandom(0,indexList.length-1);	
-									randomIndexList[i] = indexList[randomIndex];
-									indexList.splice(randomIndex,1);
-								}
-
-								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-									if(i == 0){
-										cards[ randomIndexList[i] ].prev = null;
-									}else{
-										cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
-									}
-
-									if(i == cnst.CARD_NUMBERS - 1){
-										cards[ randomIndexList[i] ].next = null;
-									}else{
-										cards[ randomIndexList[i] ].next = randomIndexList[i+1];
-									}
-								}
-							}	
-						}
-
-						var indexFinder = new IndexFinder();
-						var currentIndex = indexFinder.findLast();
 						function BubbleSort(){
 							this.run = function(){
-								var delayTime = 100;
+								var delayTime = 410;
 								var eventController = new EventController(delayTime);
-								var cardController = new CardDataController();
+								var oneStep = new BubbleSortOneStep();
 
-								var test = function(){
-									var motion = new CardMotion();
-
-									var prevIndex = cards[currentIndex].prev;
-
-									if(cards[currentIndex].number < cards[prevIndex].number){
-										motion.swap(prevIndex,currentIndex);
-										cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
-									}
+								for(var i = 0; i < cnst.CARD_NUMBERS-1; i++){
+									eventController.enQueue( function(){oneStep();} );
 								}
-								eventController.enQueue(test);
 								eventController.run();
 							}
 						}
 
-						function CardSwapper(){
-							this.swap = function(currentIndex,prevIndex){
-								var copyNext = cards[currentIndex].next;
+						function BubbleSortOneStep(){
 
-								if(cards[ cards[prevIndex].prev ] != null){
-									cards[ cards[prevIndex].prev ].next = cards[currentIndex].number;
-								}
-								if(cards[ cards[currentIndex].next ] != null){
-									cards[ cards[currentIndex].next ].prev = cards[prevIndex].number;
-								}
+							var cardController = new CardDataController();
+							var indexFinder = new IndexFinder();
+							var motion = new CardMotion();
+							var currentIndex = indexFinder.findLast();
 
-								cards[currentIndex].next = cards[prevIndex].number;
-								cards[currentIndex].prev = cards[prevIndex].prev;
-								
-								cards[prevIndex].next = copyNext;
-								cards[prevIndex].prev = cards[currentIndex].number;
+							return function(){
+								var prevIndex = cards[currentIndex].prev;
+
+								if(cards[currentIndex].number < cards[prevIndex].number){
+									motion.swap(prevIndex,currentIndex);
+									cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
+								}else{
+									currentIndex = cards[currentIndex].prev;	
+								}
 							}	
 						}
 
