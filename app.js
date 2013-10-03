@@ -373,9 +373,30 @@ $(function(){
 						}
 
 						function CardDataController(){
-							this.insert = function(){
-								//TODO	
+							this.insert = function(movingCard,left,right){
+								if(cards[movingCard].next != null){
+									cards[ cards[movingCard].next ].prev = cards[movingCard].prev;
+								}
+								if(cards[movingCard].prev != null){
+									cards[ cards[movingCard].prev ].next = cards[movingCard].next;
+								}
+
+								if(left != null){
+									cards[left].next = movingCard;
+									cards[movingCard].prev = left;
+								}
+								if(right != null){
+									cards[right].prev = movingCard;
+									cards[movingCard].next = right;
+								}
+
+								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+									console.log(i+"”Ô–Ú");
+									console.log(cards[i].prev);
+									console.log(cards[i].next);
+								}
 							}
+
 							this.mix = function(){
 								var random = new RandomNumberGenerator();
 								var indexList = [];
@@ -422,8 +443,8 @@ $(function(){
 
 									if(cards[currentIndex].number < cards[prevIndex].number){
 										motion.swap(prevIndex,currentIndex);
-										console.log(currentIndex);
-										console.log(prevIndex);
+									//	cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
+										cardController.insert(8,17,16);
 									}
 								}
 								eventController.enQueue(test);
