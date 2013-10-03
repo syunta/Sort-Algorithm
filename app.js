@@ -384,10 +384,15 @@ $(function(){
 								if(left != null){
 									cards[left].next = movingCard;
 									cards[movingCard].prev = left;
+								}else{
+									cards[movingCard].prev = null;	
 								}
+
 								if(right != null){
 									cards[right].prev = movingCard;
 									cards[movingCard].next = right;
+								}else{
+									cards[movingCard].next = null;	
 								}
 
 								for(var i = 0; i < cnst.CARD_NUMBERS; i++){
@@ -428,6 +433,8 @@ $(function(){
 							}	
 						}
 
+						var indexFinder = new IndexFinder();
+						var currentIndex = indexFinder.findLast();
 						function BubbleSort(){
 							this.run = function(){
 								var delayTime = 100;
@@ -436,15 +443,12 @@ $(function(){
 
 								var test = function(){
 									var motion = new CardMotion();
-									var indexFinder = new IndexFinder();
 
-									var currentIndex = indexFinder.findLast();
 									var prevIndex = cards[currentIndex].prev;
 
 									if(cards[currentIndex].number < cards[prevIndex].number){
 										motion.swap(prevIndex,currentIndex);
-									//	cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
-										cardController.insert(8,17,16);
+										cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
 									}
 								}
 								eventController.enQueue(test);
