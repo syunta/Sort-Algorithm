@@ -16,8 +16,6 @@ $(function(){
 		}
 
 		/* DataSource */
-		var timer = new DelayTimer();
-
 		function Constant(){
 			this.getCARD_NUMBERS = function(){
 				return 20;
@@ -68,7 +66,6 @@ $(function(){
 			}
 		}
 
-
 		/* UI */
 		function UI(){
 			this.draw = function(){
@@ -107,6 +104,8 @@ $(function(){
 		}
 
 		function CardSetter(){
+			var timer = new DelayTimer();
+
 			this.set = function(cards){
 				timer.reset();
 				for(var i = cards.length-1; 0 <= i; i--){
@@ -257,7 +256,6 @@ $(function(){
 			}
 		}
 
-		
 		/* Events */
 		function EventListener(){
 			this.set = function(){
