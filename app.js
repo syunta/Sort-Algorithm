@@ -98,6 +98,7 @@ $(function(){
 
 				$(".buttonPlacement").
 					append(dom.bubbleSortButton).
+					append(dom.insertionSortButton).
 					append(dom.shuffleButton);
 				cardSetter.set(dom.cards);
 			}
@@ -183,6 +184,7 @@ $(function(){
 			var buttonCreator = new ButtonCreator();
 
 			this.bubbleSortButton = buttonCreator.create("BubbleSort");
+			this.insertionSortButton = buttonCreator.create("InsertionSort");
 			this.shuffleButton = buttonCreator.create("Shuffle");
 			this.cards = [];
 
@@ -276,10 +278,12 @@ $(function(){
 
 		function EventList(){
 			var bubbleSort = new BubbleSort();
+			var insertionSort = new InsertionSort();
 			var shuffle = new Shuffle();
 
 			return {
 				BubbleSort: bubbleSort.run,
+				InsertionSort: insertionSort.run,
 				Shuffle   : shuffle.run
 			};
 		}
@@ -491,6 +495,12 @@ $(function(){
 					}	
 				}
 			}
+		}
+
+		function InsertionSort(){
+			this.run = function(){
+				alert("InsertionSort");	
+			}	
 		}
 
 		function RandomNumberGenerator(){
