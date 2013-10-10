@@ -381,7 +381,8 @@ $(function(){
 						cards[ randomIndexList[i] ].next = randomIndexList[i+1];
 					}
 				}
-			}	
+			}
+
 			this.getNumber = function(index){
 				return cards[index].number;	
 			}
@@ -404,14 +405,9 @@ $(function(){
 				this.move(cards.getNumber(currentIndex),prevPosition.left);
 				this.move(cards.getNumber(prevIndex),currentPosition.left);
 			}
-			this.changeBackGround = function(target){
+			this.changeBackGround = function(target,color){
 				$("#"+target).css({
-					"background-color":"yellow"	
-				});
-			}
-			this.returnBackGround = function(target){
-				$("#"+target).css({
-					"background-color":"white"	
+					"background-color": color	
 				});
 			}
 		}
@@ -468,19 +464,18 @@ $(function(){
 						eventController.enQueue( oneStep.excute );
 					}
 				}
-				eventController.enQueue( function(){motion.returnBackGround(currentIndex);} );
+				eventController.enQueue( function(){motion.changeBackGround(currentIndex,"white");} );
 				eventController.run();
 
 				function LastIndexSetter(){
 					this.set = function(){
-						motion.returnBackGround(currentIndex);
+						motion.changeBackGround(currentIndex,"white");
 						currentIndex = indexFinder.findLast(cards);
-						motion.changeBackGround(currentIndex);
+						motion.changeBackGround(currentIndex,"yellow");
 					}	
 				}
 
 				function BubbleSortOneStep(){
-
 					this.excute = function(){
 						var prevIndex = cards.getPrev(currentIndex);
 
@@ -488,9 +483,9 @@ $(function(){
 							motion.swap(prevIndex,currentIndex);
 							cards.insert(currentIndex,cards.getPrev(prevIndex),prevIndex);
 						}else{
-							motion.returnBackGround(currentIndex);
+							motion.changeBackGround(currentIndex,"white");
 							currentIndex = cards.getPrev(currentIndex);
-							motion.changeBackGround(currentIndex);
+							motion.changeBackGround(currentIndex,"yellow");
 						}
 					}	
 				}
@@ -499,7 +494,45 @@ $(function(){
 
 		function InsertionSort(){
 			this.run = function(){
-				alert("InsertionSort");	
+//				var cnst = new Constant();
+//				var delayTime = 410;
+//				var eventController = new EventController(delayTime);
+//				var motion = new CardMotion();
+//				var indexFinder = new IndexFinder();
+//				var nextIndexSetter = new NextIndexSetter();
+//				var oneStep = new InsertionSortOneStep();
+//
+//				var insertionTarget;
+//				var nextInsertionTarget;
+//				var comparisonTarget;
+//
+//				eventController.enQueue( oneStep.setInitialInsertionTarget );
+//				eventController.run();
+//
+//				function InsertionSortOneStep(){
+//					this.setInitialInsertionTarget = function(){
+//						insertionTarget = indexFinder.findFirst(cards) + 1;
+//						nextInsertionTarget = cards.getNext(insertionTarget);
+//					}
+//					this.setInsertionTarget = function(){
+//						insertionTarget = nextInsertionTarget;
+//						nextInsertionTarget = cards.getNext(insertionTarget);
+//					}
+//					this.setComparisonTarget = function(){
+//							
+//					}
+//					this.excute = function(){
+//						if( cards.getNumber(insertionTarget) > cards.getNumber(nextIndex) ){
+//							motion.swap(currentIndex,nextIndex);
+//							cards.insert(nextIndex,null,currentIndex);
+//						}
+//						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
+//							console.log(i + "”Ô–Ú");
+//							console.log( cards.getPrev(i) );
+//							console.log( cards.getNext(i) );
+//						}
+//					}
+//				}
 			}	
 		}
 
