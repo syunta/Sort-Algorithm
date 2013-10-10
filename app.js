@@ -18,8 +18,7 @@ $(function(){
 		/* DataSource */
 		var cnst = new Constant();
 		var timer = new DelayTimer();
-		var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
-		var cards = doublyLinkedCardsCreator.create();
+
 
 		function Constant(){
 			this.CARD_NUMBERS = 20;	
@@ -320,7 +319,11 @@ $(function(){
 			}
 		}
 
+		var cards = new CardDataController();
 		function CardDataController(){
+			var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
+			var cards = doublyLinkedCardsCreator.create();
+
 			this.insert = function(movingCard,left,right){
 				if(cards[movingCard].next != null){
 					cards[ cards[movingCard].next ].prev = cards[movingCard].prev;
@@ -373,6 +376,15 @@ $(function(){
 					}
 				}
 			}	
+			this.getNumber = function(index){
+				return cards[index].number;	
+			}
+			this.getNext = function(index){
+				return cards[index].next;	
+			}
+			this.getPrev = function(index){
+				return cards[index].prev;	
+			}
 		}
 
 		function CardMotion(){
@@ -401,13 +413,12 @@ $(function(){
 		function Shuffle(){
 			this.run = function(){
 				var cardArranger = new CardArranger();
-				var cardController = new CardDataController();
 				var delayTime = 400;
 				var eventController = new EventController(delayTime);
 
-				eventController.enQueue( function(){cardArranger.arrange(0)} );
-				eventController.enQueue( cardController.mix );
-				eventController.enQueue( function(){cardArranger.arrange(60)} );
+				eventController.enQueue( function(){cardArranger.arrange(cards,0)} );
+				eventController.enQueue( cards.mix );
+				eventController.enQueue( function(){cardArranger.arrange(cards,60)} );
 				eventController.run();
 			}	
 		}
@@ -416,19 +427,19 @@ $(function(){
 			var indexFinder = new IndexFinder();
 			var motion = new CardMotion();
 
-			this.arrange = function(additionalMoveLength){
-				var currentIndex = indexFinder.findFirst();
-				var nextIndex = cards[currentIndex].next;
+			this.arrange = function(cards,additionalMoveLength){
+				var currentIndex = indexFinder.findFirst(cards);
+				var nextIndex = cards.getNext(currentIndex);
 				var moveLength = 0;
 				while(true){
 					motion.move(
-						cards[currentIndex].number,
+						cards.getNumber(currentIndex),
 						moveLength
 					);
 					if(nextIndex == null){break;}
 					moveLength += additionalMoveLength;
 					currentIndex = nextIndex;
-					nextIndex = cards[currentIndex].next;
+					nextIndex = cards.getNext(currentIndex);
 				}
 			}
 		}
@@ -487,20 +498,20 @@ $(function(){
 		}
 
 		function IndexFinder(){
-			this.findFirst = function(){
+			this.findFirst = function(cards){
 				var firstIndex;
 				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-					if(cards[i].prev == null){
+					if(cards.getPrev(i) == null){
 						firstIndex = i;
 						break;	
 					}
 				}
 				return firstIndex;
 			}
-			this.findLast = function(){
+			this.findLast = function(cards){
 				var lastIndex;
 				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
-					if(cards[i].next == null){
+					if(cards.getNext(i) == null){
 						lastIndex = i;
 						break;	
 					}
