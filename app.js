@@ -392,11 +392,11 @@ $(function(){
 				$("#"+cardNumber).animate({"left":movement+"px"});
 			}
 			this.swap = function(currentIndex,prevIndex){
-				var currentPosition = $("#"+cards[currentIndex].number).position();
-				var prevPosition = $("#"+cards[prevIndex].number).position();
+				var currentPosition = $( "#"+cards.getNumber(currentIndex) ).position();
+				var prevPosition = $( "#"+cards.getNumber(prevIndex) ).position();
 
-				this.move(cards[currentIndex].number,prevPosition.left);
-				this.move(cards[prevIndex].number,currentPosition.left);
+				this.move(cards.getNumber(currentIndex),prevPosition.left);
+				this.move(cards.getNumber(prevIndex),currentPosition.left);
 			}
 			this.changeBackGround = function(target){
 				$("#"+target).css({
@@ -467,23 +467,22 @@ $(function(){
 				function LastIndexSetter(){
 					this.set = function(){
 						motion.returnBackGround(currentIndex);
-						currentIndex = indexFinder.findLast();
+						currentIndex = indexFinder.findLast(cards);
 						motion.changeBackGround(currentIndex);
 					}	
 				}
 
 				function BubbleSortOneStep(){
-					var cardController = new CardDataController();
 
 					this.excute = function(){
-						var prevIndex = cards[currentIndex].prev;
+						var prevIndex = cards.getPrev(currentIndex);
 
-						if(cards[currentIndex].number < cards[prevIndex].number){
+						if( cards.getNumber(currentIndex) < cards.getNumber(prevIndex) ){
 							motion.swap(prevIndex,currentIndex);
-							cardController.insert(currentIndex,cards[prevIndex].prev,prevIndex);
+							cards.insert(currentIndex,cards.getPrev(prevIndex),prevIndex);
 						}else{
 							motion.returnBackGround(currentIndex);
-							currentIndex = cards[currentIndex].prev;	
+							currentIndex = cards.getPrev(currentIndex);
 							motion.changeBackGround(currentIndex);
 						}
 					}	
