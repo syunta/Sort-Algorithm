@@ -16,19 +16,20 @@ $(function(){
 		}
 
 		/* DataSource */
-		var cnst = new Constant();
 		var timer = new DelayTimer();
 
-
 		function Constant(){
-			this.CARD_NUMBERS = 20;	
+			this.getCARD_NUMBERS = function(){
+				return 20;
+			}
 		}
 
 		function DoublyLinkedCardsCreator(){
+			var cnst = new Constant();
 			var indexSetter = new IndexSetter();
 			this.create = function(){
 				var cards = [];
-				for(var cardNumber = cnst.CARD_NUMBERS-1; 0 <= cardNumber; cardNumber--){
+				for(var cardNumber = cnst.getCARD_NUMBERS()-1; 0 <= cardNumber; cardNumber--){
 					cards[cardNumber] = {
 						number: cardNumber,
 						prev  : indexSetter.setPrevIndex(cardNumber),
@@ -50,8 +51,9 @@ $(function(){
 		}
 
 		function IndexSetter(){	
+			var cnst = new Constant();
 			this.setPrevIndex = function(indexNumber){
-				if(indexNumber == cnst.CARD_NUMBERS-1){
+				if(indexNumber == cnst.getCARD_NUMBERS()-1){
 					return null;
 				}else{
 					return (indexNumber + 1);	
@@ -177,6 +179,7 @@ $(function(){
 		}
 
 		function DOM(){
+			var cnst = new Constant();
 			var cardCreator = new CardCreator();
 			var buttonCreator = new ButtonCreator();
 
@@ -184,7 +187,7 @@ $(function(){
 			this.shuffleButton = buttonCreator.create("Shuffle");
 			this.cards = [];
 
-			for(var cardNumber = 0; cardNumber < cnst.CARD_NUMBERS; cardNumber++){
+			for(var cardNumber = 0; cardNumber < cnst.getCARD_NUMBERS(); cardNumber++){
 				this.cards[cardNumber] = cardCreator.create(cardNumber);
 			}
 		}
@@ -321,6 +324,7 @@ $(function(){
 
 		var cards = new CardDataController();
 		function CardDataController(){
+			var cnst = new Constant();
 			var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
 			var cards = doublyLinkedCardsCreator.create();
 
@@ -351,25 +355,25 @@ $(function(){
 				var random = new RandomNumberGenerator();
 				var indexList = [];
 				
-				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
 					indexList[i] = i;		
 				}
 
 				var randomIndexList = [];
-				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
 					var randomIndex = random.getRandom(0,indexList.length-1);	
 					randomIndexList[i] = indexList[randomIndex];
 					indexList.splice(randomIndex,1);
 				}
 
-				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
 					if(i == 0){
 						cards[ randomIndexList[i] ].prev = null;
 					}else{
 						cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
 					}
 
-					if(i == cnst.CARD_NUMBERS - 1){
+					if(i == cnst.getCARD_NUMBERS() - 1){
 						cards[ randomIndexList[i] ].next = null;
 					}else{
 						cards[ randomIndexList[i] ].next = randomIndexList[i+1];
@@ -446,6 +450,7 @@ $(function(){
 
 		function BubbleSort(){
 			this.run = function(){
+				var cnst = new Constant();
 				var delayTime = 410;
 				var eventController = new EventController(delayTime);
 				var motion = new CardMotion();
@@ -455,9 +460,9 @@ $(function(){
 
 				var currentIndex;
 
-				for(var i = 0; i < cnst.CARD_NUMBERS-1; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS()-1; i++){
 					eventController.enQueue( lastIndexSetter.set );
-					for(var j = 0; j < ((cnst.CARD_NUMBERS-1) - i); j++){
+					for(var j = 0; j < ((cnst.getCARD_NUMBERS()-1) - i); j++){
 						eventController.enQueue( oneStep.excute );
 					}
 				}
@@ -497,9 +502,10 @@ $(function(){
 		}
 
 		function IndexFinder(){
+			var cnst = new Constant();
 			this.findFirst = function(cards){
 				var firstIndex;
-				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
 					if(cards.getPrev(i) == null){
 						firstIndex = i;
 						break;	
@@ -509,7 +515,7 @@ $(function(){
 			}
 			this.findLast = function(cards){
 				var lastIndex;
-				for(var i = 0; i < cnst.CARD_NUMBERS; i++){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
 					if(cards.getNext(i) == null){
 						lastIndex = i;
 						break;	
