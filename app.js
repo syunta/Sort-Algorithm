@@ -373,7 +373,7 @@ $(function(){
 					if(i == 0){
 						cards[ randomIndexList[i] ].prev = null;
 					}else{
-						cards[ randomIndexList[i] ].prev = randomIndexList[i-1];	
+						cards[ randomIndexList[i] ].prev = randomIndexList[i-1];
 					}
 
 					if(i == cnst.getCARD_NUMBERS() - 1){
@@ -382,6 +382,22 @@ $(function(){
 						cards[ randomIndexList[i] ].next = randomIndexList[i+1];
 					}
 				}
+			}
+
+			this.separate = function(edgeIndex,leftGroupName,rightGroupName){
+				var settingGroupIndex = edgeIndex;
+				while(settingGroupIndex != null){
+					cards[settingGroupIndex].group = leftGroupName;
+					settingGroupIndex = cards[settingGroupIndex].prev;
+				}
+				settingGroupIndex = cards[edgeIndex].next;
+				while(settingGroupIndex != null){
+					cards[settingGroupIndex].group = rightGroupName;
+					settingGroupIndex = cards[settingGroupIndex].next;
+				}
+
+				cards[ cards[edgeIndex].next ].prev = null;
+				cards[edgeIndex].next = null;
 			}
 
 			this.getNumber = function(index){
@@ -418,8 +434,9 @@ $(function(){
 				});
 			}
 
-			this.arrange = function(additionalLeftLength,topPosition){
-				var currentIndex = indexFinder.findFirst(cards);
+			this.arrange = function(additionalLeftLength,topPosition,groupName){
+				if(typeof groupName === 'undefined') groupName = null;
+				var currentIndex = indexFinder.findFirst(cards,groupName);
 				var nextIndex = cards.getNext(currentIndex);
 				var leftPosition = 0;
 				while(true){
@@ -432,12 +449,6 @@ $(function(){
 					leftPosition += additionalLeftLength;
 					currentIndex = nextIndex;
 					nextIndex = cards.getNext(currentIndex);
-				}
-			}
-
-			this.separate = function(groupName,movement){
-				for(var cardNumber = 0; i < cnst.getCARD_NUMBERS(); cardNumber++){
-					$("#"+cardNumber).anumate({});
 				}
 			}
 
@@ -524,13 +535,18 @@ $(function(){
 				var comparisonTarget;
 
 				eventController.enQueue( oneStep.groupTogether );
-				eventController.enQueue( oneStep.setInitialComparisonTarget );
-				eventController.enQueue( oneStep.excute );
 				eventController.run();
 
 				function InsertionSortOneStep(){
 					this.groupTogether = function(){
-						this.setInsertionTarget();
+						cards.separate(indexFinder.findFirst(cards),'completed','uncompleted');	
+						motion.arrange(60,200,'uncompleted');
+						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
+							console.log(i + "ç•ªç›®");
+							console.log( cards.getPrev(i) );
+							console.log( cards.getNext(i) );
+							console.log( cards.getGroup(i) );
+						}
 					}
 					this.setInsertionTarget = function(){
 						insertionTarget = cards.getNext( indexFinder.findFirst(cards) );
@@ -548,11 +564,6 @@ $(function(){
 						if( cards.getNumber(comparisonTarget) > cards.getNumber(insertionTarget) ){
 							motion.swap(insertionTarget,comparisonTarget);
 							cards.insert(insertionTarget,null,comparisonTarget);
-						}
-						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-							console.log(i + "”Ô–Ú");
-							console.log( cards.getPrev(i) );
-							console.log( cards.getNext(i) );
 						}
 					}
 				}
