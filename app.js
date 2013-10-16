@@ -31,7 +31,8 @@ $(function(){
 					cards[cardNumber] = {
 						number: cardNumber,
 						prev  : indexSetter.setPrevIndex(cardNumber),
-						next  : indexSetter.setNextIndex(cardNumber)
+						next  : indexSetter.setNextIndex(cardNumber),
+						group : null
 					}
 				}
 				return cards;
@@ -392,6 +393,17 @@ $(function(){
 			this.getPrev = function(index){
 				return cards[index].prev;	
 			}
+			this.getGroup = function(index){
+				return cards[index].group;
+			}
+			this.setGroup = function(index,groupName){
+				cards[index].group = groupName;
+			}
+			this.resetGroup = function(){
+				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
+					cards[i].group = null;
+				}
+			}
 		}
 
 		function CardMotion(){
@@ -453,27 +465,18 @@ $(function(){
 				var eventController = new EventController(delayTime);
 				var motion = new CardMotion();
 				var indexFinder = new IndexFinder();
-				var lastIndexSetter = new LastIndexSetter();
 				var oneStep = new BubbleSortOneStep();
 
 				var currentIndex;
 
 				for(var i = 0; i < cnst.getCARD_NUMBERS()-1; i++){
-					eventController.enQueue( lastIndexSetter.set );
+					eventController.enQueue( oneStep.setLastIndex );
 					for(var j = 0; j < ((cnst.getCARD_NUMBERS()-1) - i); j++){
 						eventController.enQueue( oneStep.excute );
 					}
 				}
 				eventController.enQueue( function(){motion.changeBackGround(currentIndex,"white");} );
 				eventController.run();
-
-				function LastIndexSetter(){
-					this.set = function(){
-						motion.changeBackGround(currentIndex,"white");
-						currentIndex = indexFinder.findLast(cards);
-						motion.changeBackGround(currentIndex,"yellow");
-					}	
-				}
 
 				function BubbleSortOneStep(){
 					this.excute = function(){
@@ -488,51 +491,67 @@ $(function(){
 							motion.changeBackGround(currentIndex,"yellow");
 						}
 					}	
+					this.setLastIndex = function(){
+						motion.changeBackGround(currentIndex,"white");
+						currentIndex = indexFinder.findLast(cards);
+						motion.changeBackGround(currentIndex,"yellow");
+					}	
 				}
 			}
 		}
 
 		function InsertionSort(){
 			this.run = function(){
-//				var cnst = new Constant();
-//				var delayTime = 410;
-//				var eventController = new EventController(delayTime);
-//				var motion = new CardMotion();
-//				var indexFinder = new IndexFinder();
-//				var nextIndexSetter = new NextIndexSetter();
-//				var oneStep = new InsertionSortOneStep();
-//
-//				var insertionTarget;
-//				var nextInsertionTarget;
-//				var comparisonTarget;
-//
-//				eventController.enQueue( oneStep.setInitialInsertionTarget );
-//				eventController.run();
-//
-//				function InsertionSortOneStep(){
-//					this.setInitialInsertionTarget = function(){
-//						insertionTarget = indexFinder.findFirst(cards) + 1;
-//						nextInsertionTarget = cards.getNext(insertionTarget);
-//					}
-//					this.setInsertionTarget = function(){
-//						insertionTarget = nextInsertionTarget;
-//						nextInsertionTarget = cards.getNext(insertionTarget);
-//					}
-//					this.setComparisonTarget = function(){
-//							
-//					}
-//					this.excute = function(){
-//						if( cards.getNumber(insertionTarget) > cards.getNumber(nextIndex) ){
-//							motion.swap(currentIndex,nextIndex);
-//							cards.insert(nextIndex,null,currentIndex);
-//						}
-//						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-//							console.log(i + "”Ô–Ú");
-//							console.log( cards.getPrev(i) );
-//							console.log( cards.getNext(i) );
-//						}
-//					}
-//				}
+				var cnst = new Constant();
+				var delayTime = 410;
+				var eventController = new EventController(delayTime);
+				var motion = new CardMotion();
+				var indexFinder = new IndexFinder();
+				var oneStep = new InsertionSortOneStep();
+
+				var insertionTarget;
+				var nextInsertionTarget;
+				var comparisonTarget;
+
+				eventController.enQueue( oneStep.setInitialInsertionTarget );
+				eventController.enQueue( oneStep.setInitialComparisonTarget );
+				eventController.enQueue( oneStep.excute );
+				eventController.run();
+
+				function InsertionSortOneStep(){
+					this.groupTogether = function(){
+							
+					}
+					this.setInitialInsertionTarget = function(){
+						insertionTarget = cards.getNext( indexFinder.findFirst(cards) );
+						nextInsertionTarget = cards.getNext(insertionTarget);
+						motion.changeBackGround(insertionTarget,"yellow");
+					}
+					this.setInsertionTarget = function(){
+						insertionTarget = nextInsertionTarget;
+						nextInsertionTarget = cards.getNext(insertionTarget);
+						motion.changeBackGround(insertionTarget,"yellow");
+					}
+					this.setInitialComparisonTarget = function(){
+						comparisonTarget = cards.getPrev(insertionTarget);
+						motion.changeBackGround(comparisonTarget,"aqua");
+					}
+					this.setComparisonTarget = function(){
+						comparisonTarget = cards.getPrev(comparisonTarget);
+						motion.changeBackGround(comparisonTarget,"aqua");
+					}
+					this.excute = function(){
+						if( cards.getNumber(comparisonTarget) > cards.getNumber(insertionTarget) ){
+							motion.swap(insertionTarget,comparisonTarget);
+							cards.insert(insertionTarget,null,comparisonTarget);
+						}
+						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
+							console.log(i + "”Ô–Ú");
+							console.log( cards.getPrev(i) );
+							console.log( cards.getNext(i) );
+						}
+					}
+				}
 			}	
 		}
 
