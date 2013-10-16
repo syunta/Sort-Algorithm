@@ -215,7 +215,7 @@ $(function(){
 			this.defineCardCSS = function(card){
 				card.css({
 					"position":"absolute",
-					"top":"30%",
+					"top":"100px",
 					"text-align":"center",
 					"line-height":"80px",
 					"font-size":"40px",
@@ -278,14 +278,14 @@ $(function(){
 		}
 
 		function EventList(){
-			var bubbleSort = new BubbleSort();
+			var bubbleSort    = new BubbleSort();
 			var insertionSort = new InsertionSort();
-			var shuffle = new Shuffle();
+			var shuffle       = new Shuffle();
 
 			return {
-				BubbleSort: bubbleSort.run,
-				InsertionSort: insertionSort.run,
-				Shuffle   : shuffle.run
+				BubbleSort    : bubbleSort.run,
+				InsertionSort : insertionSort.run,
+				Shuffle       : shuffle.run
 			};
 		}
 
@@ -407,9 +407,40 @@ $(function(){
 		}
 
 		function CardMotion(){
-			this.move = function(cardNumber,movement){
-				$("#"+cardNumber).animate({"left":movement+"px"});
+			var cnst = new Constant();
+			var indexFinder = new IndexFinder();
+
+			this.move = function(cardNumber,leftLength,topLength){
+				if(typeof topLength === 'undefined') topLength = $("#"+cardNumber).top;
+				$("#"+cardNumber).animate({
+					"left":leftLength+"px",
+					"top" :topLength+"px"
+				});
 			}
+
+			this.arrange = function(additionalLeftLength,topPosition){
+				var currentIndex = indexFinder.findFirst(cards);
+				var nextIndex = cards.getNext(currentIndex);
+				var leftPosition = 0;
+				while(true){
+					this.move(
+						cards.getNumber(currentIndex),
+						leftPosition,
+						topPosition
+					);
+					if(nextIndex == null){break;}
+					leftPosition += additionalLeftLength;
+					currentIndex = nextIndex;
+					nextIndex = cards.getNext(currentIndex);
+				}
+			}
+
+			this.separate = function(groupName,movement){
+				for(var cardNumber = 0; i < cnst.getCARD_NUMBERS(); cardNumber++){
+					$("#"+cardNumber).anumate({});
+				}
+			}
+
 			this.swap = function(currentIndex,prevIndex){
 				var currentPosition = $( "#"+cards.getNumber(currentIndex) ).position();
 				var prevPosition = $( "#"+cards.getNumber(prevIndex) ).position();
@@ -417,6 +448,7 @@ $(function(){
 				this.move(cards.getNumber(currentIndex),prevPosition.left);
 				this.move(cards.getNumber(prevIndex),currentPosition.left);
 			}
+
 			this.changeBackGround = function(target,color){
 				$("#"+target).css({
 					"background-color": color	
@@ -426,38 +458,17 @@ $(function(){
 
 		function Shuffle(){
 			this.run = function(){
-				var cardArranger = new CardArranger();
 				var delayTime = 400;
 				var eventController = new EventController(delayTime);
+				var motion = new CardMotion();
 
-				eventController.enQueue( function(){cardArranger.arrange(cards,0)} );
+				eventController.enQueue( function(){motion.arrange(0)} );
 				eventController.enQueue( cards.mix );
-				eventController.enQueue( function(){cardArranger.arrange(cards,60)} );
+				eventController.enQueue( function(){motion.arrange(60)} );
 				eventController.run();
 			}	
 		}
 		
-		function CardArranger(){
-			var indexFinder = new IndexFinder();
-			var motion = new CardMotion();
-
-			this.arrange = function(cards,additionalMoveLength){
-				var currentIndex = indexFinder.findFirst(cards);
-				var nextIndex = cards.getNext(currentIndex);
-				var moveLength = 0;
-				while(true){
-					motion.move(
-						cards.getNumber(currentIndex),
-						moveLength
-					);
-					if(nextIndex == null){break;}
-					moveLength += additionalMoveLength;
-					currentIndex = nextIndex;
-					nextIndex = cards.getNext(currentIndex);
-				}
-			}
-		}
-
 		function BubbleSort(){
 			this.run = function(){
 				var cnst = new Constant();
@@ -510,26 +521,19 @@ $(function(){
 				var oneStep = new InsertionSortOneStep();
 
 				var insertionTarget;
-				var nextInsertionTarget;
 				var comparisonTarget;
 
-				eventController.enQueue( oneStep.setInitialInsertionTarget );
+				eventController.enQueue( oneStep.groupTogether );
 				eventController.enQueue( oneStep.setInitialComparisonTarget );
 				eventController.enQueue( oneStep.excute );
 				eventController.run();
 
 				function InsertionSortOneStep(){
 					this.groupTogether = function(){
-							
-					}
-					this.setInitialInsertionTarget = function(){
-						insertionTarget = cards.getNext( indexFinder.findFirst(cards) );
-						nextInsertionTarget = cards.getNext(insertionTarget);
-						motion.changeBackGround(insertionTarget,"yellow");
+						this.setInsertionTarget();
 					}
 					this.setInsertionTarget = function(){
-						insertionTarget = nextInsertionTarget;
-						nextInsertionTarget = cards.getNext(insertionTarget);
+						insertionTarget = cards.getNext( indexFinder.findFirst(cards) );
 						motion.changeBackGround(insertionTarget,"yellow");
 					}
 					this.setInitialComparisonTarget = function(){
@@ -564,11 +568,11 @@ $(function(){
 		function IndexFinder(){
 			var cnst = new Constant();
 
-			this.findFirst = function(cards,group){
-				if(typeof group === 'undefined') group = null;
+			this.findFirst = function(cards,groupName){
+				if(typeof groupName === 'undefined') groupName = null;
 				var firstIndex;
 				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-					if(cards.getPrev(i) == null && cards.getGroup(i) == group){
+					if(cards.getPrev(i) == null && cards.getGroup(i) == groupName){
 						firstIndex = i;
 						break;	
 					}
@@ -576,11 +580,11 @@ $(function(){
 				return firstIndex;
 			}
 			
-			this.findLast = function(cards,group){
-				if(typeof group === 'undefined') group = null;
+			this.findLast = function(cards,groupName){
+				if(typeof groupName === 'undefined') groupName = null;
 				var lastIndex;
 				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-					if(cards.getNext(i) == null && cards.getGroup(i) == group){
+					if(cards.getNext(i) == null && cards.getGroup(i) == groupName){
 						lastIndex = i;
 						break;	
 					}
