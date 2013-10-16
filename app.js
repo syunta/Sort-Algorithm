@@ -563,20 +563,24 @@ $(function(){
 
 		function IndexFinder(){
 			var cnst = new Constant();
-			this.findFirst = function(cards){
+
+			this.findFirst = function(cards,group){
+				if(typeof group === 'undefined') group = null;
 				var firstIndex;
 				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-					if(cards.getPrev(i) == null){
+					if(cards.getPrev(i) == null && cards.getGroup(i) == group){
 						firstIndex = i;
 						break;	
 					}
 				}
 				return firstIndex;
 			}
-			this.findLast = function(cards){
+			
+			this.findLast = function(cards,group){
+				if(typeof group === 'undefined') group = null;
 				var lastIndex;
 				for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-					if(cards.getNext(i) == null){
+					if(cards.getNext(i) == null && cards.getGroup(i) == group){
 						lastIndex = i;
 						break;	
 					}
