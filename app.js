@@ -352,6 +352,10 @@ $(function(){
 				}else{
 					cards[insertionIndex].next = null;	
 				}
+
+				if(cards.getGroup(insertionIndex) != cards.getGroup(left) ){
+					cards.setGroup(insertionIndex,cards.getGroup(left));
+				}
 			}
 
 			this.mix = function(){
@@ -461,46 +465,27 @@ $(function(){
 			}
 
 			this.insert = function(insertionIndex,left,right){
-//				var insertionPosition = $( "#"+cards.getNumber(left) ).position();
+//				var insertionPosition = $( "#"+cards.getNumber(right) ).position();
 //
 //				this.move(
 //					cards.getNumber(insertionIndex),
-//					insertionPosition.left + 60,
+//					insertionPosition.left,
 //					insertionPosition.top
 //				);
 //				
-//				this.arrange(60,);
-//
-//				var shiftedIndex = right;
-//				var moveLeftLength = 60;
-//				while(shiftedIndex != null){
-//					this.move(
-//						cards.getNumber(shiftedIndex),
-//						insertionPosition.left + 60 + additionalLeftLength,
-//						insertionPosition.top
-//					);
-//					shiftedIndex = cards.getNext(shiftedIndex);
-//				}
+//				this.arrange( 0,60,insertionPosition.top,cards.getGroup(left) );
 //
 //				if( cards.getGroup(insertionIndex) == cards.getGroup(left) ){
 //					var emptyPosition = $( "#"+cards.getNumber(insertionPosition) ).position();
-//					shiftedIndex = cards.getNext(insertionIndex);
-//					moveLeftLength = 0;
-//					while(shiftedIndex != null){
-//						cards.getNumber(shiftedIndex),
-//						emptyPosition.left - moveLeftLength,
-//						emptyPosition.top
-//					}	
-//					shiftedIndex = cards.getNext(shiftedIndex);
-//
-//					cards.setGroup(shiftedIndex) = 'completed';
+//					cards.setGroup( shiftedIndex,cards.getGroup(left) );
+//					this.arrange();
 //				}
-			}
-
-			this.changeBackGround = function(target,color){
-				$( "#"+cards.getNumber(target) ).css({
-					"background-color": color	
-				});
+//			}
+//
+//			this.changeBackGround = function(target,color){
+//				$( "#"+cards.getNumber(target) ).css({
+//					"background-color": color	
+//				});
 			}
 		}
 
