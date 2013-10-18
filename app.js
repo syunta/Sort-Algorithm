@@ -353,8 +353,14 @@ $(function(){
 					cards[insertionIndex].next = null;	
 				}
 
-				if(cards.getGroup(insertionIndex) != cards.getGroup(left) ){
-					cards.setGroup(insertionIndex,cards.getGroup(left));
+				if(left != null){
+					if(cards[insertionIndex].group != cards[left].group){
+						cards[insertionIndex].group = cards[left].group;
+					}
+				}else if(right != null){
+					if(cards[insertionIndex].group != cards[right].group){
+						cards[insertionIndex].group = cards[right].group;
+					}
 				}
 			}
 
@@ -477,15 +483,14 @@ $(function(){
 //
 //				if( cards.getGroup(insertionIndex) == cards.getGroup(left) ){
 //					var emptyPosition = $( "#"+cards.getNumber(insertionPosition) ).position();
-//					cards.setGroup( shiftedIndex,cards.getGroup(left) );
 //					this.arrange();
 //				}
-//			}
-//
-//			this.changeBackGround = function(target,color){
-//				$( "#"+cards.getNumber(target) ).css({
-//					"background-color": color	
-//				});
+			}
+
+			this.changeBackGround = function(target,color){
+				$( "#"+cards.getNumber(target) ).css({
+					"background-color": color	
+				});
 			}
 		}
 
