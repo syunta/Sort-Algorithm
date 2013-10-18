@@ -331,26 +331,26 @@ $(function(){
 			var doublyLinkedCardsCreator = new DoublyLinkedCardsCreator();
 			var cards = doublyLinkedCardsCreator.create();
 
-			this.insert = function(movingCard,left,right){
-				if(cards[movingCard].next != null){
-					cards[ cards[movingCard].next ].prev = cards[movingCard].prev;
+			this.insert = function(insertionIndex,left,right){
+				if(cards[insertionIndex].next != null){
+					cards[ cards[insertionIndex].next ].prev = cards[insertionIndex].prev;
 				}
-				if(cards[movingCard].prev != null){
-					cards[ cards[movingCard].prev ].next = cards[movingCard].next;
+				if(cards[insertionIndex].prev != null){
+					cards[ cards[insertionIndex].prev ].next = cards[insertionIndex].next;
 				}
 
 				if(left != null){
-					cards[left].next = movingCard;
-					cards[movingCard].prev = left;
+					cards[left].next = insertionIndex;
+					cards[insertionIndex].prev = left;
 				}else{
-					cards[movingCard].prev = null;	
+					cards[insertionIndex].prev = null;	
 				}
 
 				if(right != null){
-					cards[right].prev = movingCard;
-					cards[movingCard].next = right;
+					cards[right].prev = insertionIndex;
+					cards[insertionIndex].next = right;
 				}else{
-					cards[movingCard].next = null;	
+					cards[insertionIndex].next = null;	
 				}
 			}
 
@@ -434,11 +434,11 @@ $(function(){
 				});
 			}
 
-			this.arrange = function(additionalLeftLength,topPosition,groupName){
+			this.arrange = function(startingLeftPosition,additionalLeftLength,topPosition,groupName){
 				if(typeof groupName === 'undefined') groupName = null;
 				var currentIndex = indexFinder.findFirst(cards,groupName);
 				var nextIndex = cards.getNext(currentIndex);
-				var leftPosition = 0;
+				var leftPosition = startingLeftPosition;
 				while(true){
 					this.move(
 						cards.getNumber(currentIndex),
@@ -460,8 +460,45 @@ $(function(){
 				this.move(cards.getNumber(prevIndex),currentPosition.left);
 			}
 
+			this.insert = function(insertionIndex,left,right){
+//				var insertionPosition = $( "#"+cards.getNumber(left) ).position();
+//
+//				this.move(
+//					cards.getNumber(insertionIndex),
+//					insertionPosition.left + 60,
+//					insertionPosition.top
+//				);
+//				
+//				this.arrange(60,);
+//
+//				var shiftedIndex = right;
+//				var moveLeftLength = 60;
+//				while(shiftedIndex != null){
+//					this.move(
+//						cards.getNumber(shiftedIndex),
+//						insertionPosition.left + 60 + additionalLeftLength,
+//						insertionPosition.top
+//					);
+//					shiftedIndex = cards.getNext(shiftedIndex);
+//				}
+//
+//				if( cards.getGroup(insertionIndex) == cards.getGroup(left) ){
+//					var emptyPosition = $( "#"+cards.getNumber(insertionPosition) ).position();
+//					shiftedIndex = cards.getNext(insertionIndex);
+//					moveLeftLength = 0;
+//					while(shiftedIndex != null){
+//						cards.getNumber(shiftedIndex),
+//						emptyPosition.left - moveLeftLength,
+//						emptyPosition.top
+//					}	
+//					shiftedIndex = cards.getNext(shiftedIndex);
+//
+//					cards.setGroup(shiftedIndex) = 'completed';
+//				}
+			}
+
 			this.changeBackGround = function(target,color){
-				$("#"+target).css({
+				$( "#"+cards.getNumber(target) ).css({
 					"background-color": color	
 				});
 			}
@@ -473,9 +510,9 @@ $(function(){
 				var eventController = new EventController(delayTime);
 				var motion = new CardMotion();
 
-				eventController.enQueue( function(){motion.arrange(0)} );
+				eventController.enQueue( function(){motion.arrange(0,0)} );
 				eventController.enQueue( cards.mix );
-				eventController.enQueue( function(){motion.arrange(60)} );
+				eventController.enQueue( function(){motion.arrange(0,60)} );
 				eventController.run();
 			}	
 		}
@@ -489,7 +526,7 @@ $(function(){
 				var indexFinder = new IndexFinder();
 				var oneStep = new BubbleSortOneStep();
 
-				var currentIndex;
+				var currentIndex = indexFinder.findLast(cards);
 
 				for(var i = 0; i < cnst.getCARD_NUMBERS()-1; i++){
 					eventController.enQueue( oneStep.setLastIndex );
@@ -535,25 +572,22 @@ $(function(){
 				var comparisonTarget;
 
 				eventController.enQueue( oneStep.groupTogether );
+				eventController.enQueue( oneStep.setInsertionTarget );
+				eventController.enQueue( oneStep.setInitialComparisonTarget );
+				eventController.enQueue( oneStep.excute );
 				eventController.run();
 
 				function InsertionSortOneStep(){
 					this.groupTogether = function(){
 						cards.separate(indexFinder.findFirst(cards),'completed','uncompleted');	
-						motion.arrange(60,200,'uncompleted');
-						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-							console.log(i + "ç•ªç›®");
-							console.log( cards.getPrev(i) );
-							console.log( cards.getNext(i) );
-							console.log( cards.getGroup(i) );
-						}
+						motion.arrange(0,60,200,'uncompleted');
 					}
 					this.setInsertionTarget = function(){
-						insertionTarget = cards.getNext( indexFinder.findFirst(cards) );
+						insertionTarget = indexFinder.findFirst(cards,'uncompleted');
 						motion.changeBackGround(insertionTarget,"yellow");
 					}
 					this.setInitialComparisonTarget = function(){
-						comparisonTarget = cards.getPrev(insertionTarget);
+						comparisonTarget = indexFinder.findLast(cards,'completed');
 						motion.changeBackGround(comparisonTarget,"aqua");
 					}
 					this.setComparisonTarget = function(){
@@ -561,9 +595,23 @@ $(function(){
 						motion.changeBackGround(comparisonTarget,"aqua");
 					}
 					this.excute = function(){
-						if( cards.getNumber(comparisonTarget) > cards.getNumber(insertionTarget) ){
-							motion.swap(insertionTarget,comparisonTarget);
-							cards.insert(insertionTarget,null,comparisonTarget);
+						if( cards.getNumber(comparisonTarget) < cards.getNumber(insertionTarget) ){
+							motion.insert(
+								insertionTarget,
+								comparisonTarget,
+								cards.getNext(comparisonTarget)
+							);
+							cards.insert(							
+								insertionTarget,
+								comparisonTarget,
+								cards.getNext(comparisonTarget)
+							);
+						}
+						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
+							console.log(i + "”Ô–Ú");
+							console.log( cards.getPrev(i) );
+							console.log( cards.getNext(i) );
+							console.log( cards.getGroup(i) );
 						}
 					}
 				}
