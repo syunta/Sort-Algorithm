@@ -444,9 +444,8 @@ $(function(){
 				});
 			}
 
-			this.arrange = function(startingLeftPosition,additionalLeftLength,topPosition,groupName){
-				if(typeof groupName === 'undefined') groupName = null;
-				var currentIndex = indexFinder.findFirst(cards,groupName);
+			this.arrange = function(startingIndex,startingLeftPosition,additionalLeftLength,topPosition){
+				var currentIndex = startingIndex;
 				var nextIndex = cards.getNext(currentIndex);
 				var leftPosition = startingLeftPosition;
 				while(true){
@@ -471,20 +470,30 @@ $(function(){
 			}
 
 			this.insert = function(insertionIndex,left,right){
-//				var insertionPosition = $( "#"+cards.getNumber(right) ).position();
-//
-//				this.move(
-//					cards.getNumber(insertionIndex),
-//					insertionPosition.left,
-//					insertionPosition.top
-//				);
-//				
-//				this.arrange( 0,60,insertionPosition.top,cards.getGroup(left) );
-//
-//				if( cards.getGroup(insertionIndex) == cards.getGroup(left) ){
-//					var emptyPosition = $( "#"+cards.getNumber(insertionPosition) ).position();
-//					this.arrange();
-//				}
+				if(right != null){
+					var insertionPosition = $( "#"+cards.getNumber(right) ).position();
+				}else if(left != null){
+					var insertionPosition = $( "#"+cards.getNumber(left) ).position();
+					insertionPosition.left += 60;
+				}
+
+				this.move(
+					cards.getNumber(insertionIndex),
+					insertionPosition.left,
+					insertionPosition.top
+				);
+				
+				var emptyPosition = $("#"+cards.getNumber(insertionIndex)).position();
+				this.arrange( cards.getNext(insertionIndex),0,60,emptyPosition.top );
+
+				if(right != null){
+					this.arrange(
+						cards.getNumber(right),
+						insertionPosition.left+60,
+						60,
+						insertionPosition.top
+					);
+				}
 			}
 
 			this.changeBackGround = function(target,color){
@@ -499,10 +508,11 @@ $(function(){
 				var delayTime = 400;
 				var eventController = new EventController(delayTime);
 				var motion = new CardMotion();
+				var indexFinder = new IndexFinder();
 
-				eventController.enQueue( function(){motion.arrange(0,0)} );
+				eventController.enQueue( function(){motion.arrange(indexFinder.findFirst(cards),0,0)} );
 				eventController.enQueue( cards.mix );
-				eventController.enQueue( function(){motion.arrange(0,60)} );
+				eventController.enQueue( function(){motion.arrange(indexFinder.findFirst(cards),0,60)} );
 				eventController.run();
 			}	
 		}
@@ -562,15 +572,20 @@ $(function(){
 				var comparisonTarget;
 
 				eventController.enQueue( oneStep.groupTogether );
-				eventController.enQueue( oneStep.setInsertionTarget );
-				eventController.enQueue( oneStep.setInitialComparisonTarget );
-				eventController.enQueue( oneStep.excute );
+				for(var i = 1; i < cnst.getCARD_NUMBERS(); i++){
+					eventController.enQueue( oneStep.setInsertionTarget );
+					eventController.enQueue( oneStep.setInitialComparisonTarget );
+					for(var j = 0; j < i; j++){
+						eventController.enQueue( oneStep.excute );
+					}
+					eventController.enQueue( oneStep.setComparisonTarget );
+				}
 				eventController.run();
 
 				function InsertionSortOneStep(){
 					this.groupTogether = function(){
+						motion.arrange(cards.getNext(indexFinder.findFirst(cards)),0,60,200);
 						cards.separate(indexFinder.findFirst(cards),'completed','uncompleted');	
-						motion.arrange(0,60,200,'uncompleted');
 					}
 					this.setInsertionTarget = function(){
 						insertionTarget = indexFinder.findFirst(cards,'uncompleted');
@@ -591,21 +606,19 @@ $(function(){
 								comparisonTarget,
 								cards.getNext(comparisonTarget)
 							);
-							cards.insert(							
+							cards.insert(	
 								insertionTarget,
 								comparisonTarget,
 								cards.getNext(comparisonTarget)
 							);
 						}
-						for(var i = 0; i < cnst.getCARD_NUMBERS(); i++){
-							console.log(i + "”Ô–Ú");
-							console.log( cards.getPrev(i) );
-							console.log( cards.getNext(i) );
-							console.log( cards.getGroup(i) );
-						}
+					}
+					this.reset = function(){
+						motion.changeBackGround(insertionTarget,"white");
+						motion.changeBackGround(comparisonTarget,"white");
 					}
 				}
-			}	
+			}
 		}
 
 		function RandomNumberGenerator(){
